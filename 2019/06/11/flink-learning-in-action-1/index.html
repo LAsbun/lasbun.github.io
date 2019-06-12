@@ -99,15 +99,15 @@
   <meta name="description" content="通过本篇文章，帮助你通过使用Maven 快速实现官网demo.">
 <meta name="keywords" content="flink">
 <meta property="og:type" content="article">
-<meta property="og:title" content="flink-learning-in-action-1">
+<meta property="og:title" content="第一个flink程序">
 <meta property="og:url" content="http://yoursite.com/2019/06/11/flink-learning-in-action-1/index.html">
 <meta property="og:site_name" content="lasbun&#39;s blog">
 <meta property="og:description" content="通过本篇文章，帮助你通过使用Maven 快速实现官网demo.">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/2019/06/11/flink-learning-in-action-1/image-20190612180013464.png">
-<meta property="og:updated_time" content="2019-06-12T10:57:06.000Z">
+<meta property="og:updated_time" content="2019-06-12T18:13:00.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="flink-learning-in-action-1">
+<meta name="twitter:title" content="第一个flink程序">
 <meta name="twitter:description" content="通过本篇文章，帮助你通过使用Maven 快速实现官网demo.">
 <meta name="twitter:image" content="http://yoursite.com/2019/06/11/flink-learning-in-action-1/image-20190612180013464.png">
 
@@ -127,7 +127,7 @@
   };
 </script>
 
-  <title>flink-learning-in-action-1 | lasbun's blog</title>
+  <title>第一个flink程序 | lasbun's blog</title>
   
 
 
@@ -355,7 +355,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">flink-learning-in-action-1
+          <h1 class="post-title" itemprop="name headline">第一个flink程序
 
               
             
@@ -398,7 +398,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2019-06-12 18:57:06" itemprop="dateModified" datetime="2019-06-12T18:57:06+08:00">2019-06-12</time>
+                <time title="Modified: 2019-06-13 02:13:00" itemprop="dateModified" datetime="2019-06-13T02:13:00+08:00">2019-06-13</time>
               
             
           </span>
@@ -479,7 +479,7 @@
 </li>
 </ul>
 <p>部分代码</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">    <span class="comment">// 先初始化执行环境</span></span><br><span class="line">StreamExecutionEnvironment environment = StreamExecutionEnvironment.getExecutionEnvironment();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置并发度为1， 方便观察输出</span></span><br><span class="line">environment.setParallelism(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 输入流</span></span><br><span class="line">DataStreamSource&lt;String&gt; socketTextStream = environment.socketTextStream(host, port);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 对输入的数据进行拆分处理</span></span><br><span class="line">DataStream&lt;Tuple2&lt;String, Long&gt;&gt; reduce = socketTextStream.flatMap(split2Word())</span><br><span class="line">    <span class="comment">// 根据tuple2 中的第一个值分组</span></span><br><span class="line">    .keyBy(<span class="number">0</span>)</span><br><span class="line">    <span class="comment">// 设置窗口，每 30s为一个窗口，每5s计算一次</span></span><br><span class="line">    .timeWindow(Time.seconds(<span class="number">30</span>), Time.seconds(<span class="number">5</span>))</span><br><span class="line">    <span class="comment">// 计算</span></span><br><span class="line">    .reduce(CountReduce());</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印到控制台 输出时间</span></span><br><span class="line">reduce.addSink(<span class="keyword">new</span> RichSinkFunction&lt;Tuple2&lt;String, Long&gt;&gt;() &#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">invoke</span><span class="params">(Tuple2&lt;String, Long&gt; value, Context context)</span> </span>&#123;</span><br><span class="line">    System.out.println(now() + <span class="string">" word: "</span> + value.f0 + <span class="string">" count: "</span> + value.f1);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// 执行</span></span><br><span class="line">environment.execute(<span class="string">"SocketWindowCount"</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SocketWindowCount</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"></span><br><span class="line">    ParameterTool parameterTool = ParameterTool.fromArgs(args);</span><br><span class="line"></span><br><span class="line">    String host = parameterTool.get(<span class="string">"host"</span>, <span class="string">"localhost"</span>);</span><br><span class="line">    <span class="keyword">int</span> port = parameterTool.getInt(<span class="string">"port"</span>, <span class="number">9000</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 先初始化执行环境</span></span><br><span class="line">    StreamExecutionEnvironment environment = StreamExecutionEnvironment.getExecutionEnvironment();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置并发度为1， 方便观察输出</span></span><br><span class="line">    environment.setParallelism(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 输入流</span></span><br><span class="line">    DataStreamSource&lt;String&gt; socketTextStream = environment.socketTextStream(host, port);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 对输入的数据进行拆分处理</span></span><br><span class="line">    DataStream&lt;Tuple2&lt;String, Long&gt;&gt; reduce = socketTextStream.flatMap(split2Word())</span><br><span class="line">        <span class="comment">// 根据tuple2 中的第一个值分组</span></span><br><span class="line">        .keyBy(<span class="number">0</span>)</span><br><span class="line">        <span class="comment">// 设置窗口，每 30s为一个窗口，每5s计算一次</span></span><br><span class="line">        .timeWindow(Time.seconds(<span class="number">30</span>), Time.seconds(<span class="number">5</span>))</span><br><span class="line">        <span class="comment">// 计算</span></span><br><span class="line">        .reduce(CountReduce());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 打印到控制台 输出时间</span></span><br><span class="line">    reduce.addSink(<span class="keyword">new</span> RichSinkFunction&lt;Tuple2&lt;String, Long&gt;&gt;() &#123;</span><br><span class="line"></span><br><span class="line">      <span class="meta">@Override</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">invoke</span><span class="params">(Tuple2&lt;String, Long&gt; value, Context context)</span> </span>&#123;</span><br><span class="line">        System.out.println(now() + <span class="string">" word: "</span> + value.f0 + <span class="string">" count: "</span> + value.f1);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    environment.execute(<span class="string">"SocketWindowCount"</span>);</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 统计相同值出现的次数</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> ReduceFunction&lt;Tuple2&lt;String, Long&gt;&gt; CountReduce() &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ReduceFunction&lt;Tuple2&lt;String, Long&gt;&gt;() &#123;</span><br><span class="line">      <span class="meta">@Override</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> Tuple2&lt;String, Long&gt; <span class="title">reduce</span><span class="params">(Tuple2&lt;String, Long&gt; value1,</span></span></span><br><span class="line"><span class="function"><span class="params">          Tuple2&lt;String, Long&gt; value2)</span></span></span><br><span class="line"><span class="function">          <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Tuple2&lt;&gt;(value1.f0, value1.f1 + value2.f1);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 将输入的一行 分割成单词，并初始化次数为1</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> FlatMapFunction&lt;String, Tuple2&lt;String, Long&gt;&gt; split2Word() &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> FlatMapFunction&lt;String, Tuple2&lt;String, Long&gt;&gt;() &#123;</span><br><span class="line">      <span class="meta">@Override</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">flatMap</span><span class="params">(String value, Collector&lt;Tuple2&lt;String, Long&gt;&gt; out)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"></span><br><span class="line">        String[] words = value.split(<span class="string">"\\W"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (String word : words) &#123;</span><br><span class="line">          <span class="keyword">if</span> (word.length() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            out.collect(<span class="keyword">new</span> Tuple2&lt;&gt;(word, <span class="number">1L</span>));</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h3 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h3><p>1 打开终端执行</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc -l 9000</span><br></pre></td></tr></table></figure>
@@ -488,7 +488,7 @@
 <p>结果:</p>
 <img src="/2019/06/11/flink-learning-in-action-1/image-20190612180013464.png" title="[title]">
 
-<p><a href="https://github.com/LAsbun/flink-learning-in-action/blob/master/src/main/java/myflink/stream/task/SocketWindowCount.java" target="_blank" rel="noopener">完整代码</a></p>
+<h3 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h3><p><a href="https://github.com/LAsbun/flink-learning-in-action/blob/master/src/main/java/myflink/stream/task/SocketWindowCount.java" target="_blank" rel="noopener">完整代码</a></p>
 <h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="https://ci.apache.org/projects/flink/flink-docs-stable/dev/projectsetup/java_api_quickstart.html" target="_blank" rel="noopener">java_api_quickstart</a></p>
 
       
@@ -535,6 +535,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/06/12/flink-learning-in-action-2/" rel="prev" title="获取topNWord">
+                获取topNWord <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -603,7 +607,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-count">3</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -677,7 +681,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#环境"><span class="nav-number">1.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#描述"><span class="nav-number">2.</span> <span class="nav-text">描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用Maven-创建项目"><span class="nav-number">3.</span> <span class="nav-text">使用Maven 创建项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码思想"><span class="nav-number">4.</span> <span class="nav-text">代码思想</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运行"><span class="nav-number">5.</span> <span class="nav-text">运行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料"><span class="nav-number">6.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#环境"><span class="nav-number">1.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#描述"><span class="nav-number">2.</span> <span class="nav-text">描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用Maven-创建项目"><span class="nav-number">3.</span> <span class="nav-text">使用Maven 创建项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码思想"><span class="nav-number">4.</span> <span class="nav-text">代码思想</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运行"><span class="nav-number">5.</span> <span class="nav-text">运行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#完整代码"><span class="nav-number">6.</span> <span class="nav-text">完整代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料"><span class="nav-number">7.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
             
 
           </div>

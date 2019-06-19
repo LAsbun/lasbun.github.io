@@ -96,18 +96,22 @@
 
 
 
-  <meta name="description" content="本片文章基于上一篇文章的逻辑上增加获取topN的逻辑，可以加深对Flink的认识。">
+  <meta name="description" content="本篇文章使用纽约市2009-1015年关于出租车驾驶的公共数据集，模拟现实数据流，获取一定时间内收入最高的出租车司机。">
 <meta name="keywords" content="Flink">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Flink之获取topNWord">
-<meta property="og:url" content="http://yoursite.com/2019/06/12/Flink-learning-in-action-2/index.html">
+<meta property="og:title" content="Flink之收入最高出租车司机">
+<meta property="og:url" content="http://yoursite.com/2019/06/14/Flink-learning-in-action-3/index.html">
 <meta property="og:site_name" content="lasbun&#39;s blog">
-<meta property="og:description" content="本片文章基于上一篇文章的逻辑上增加获取topN的逻辑，可以加深对Flink的认识。">
+<meta property="og:description" content="本篇文章使用纽约市2009-1015年关于出租车驾驶的公共数据集，模拟现实数据流，获取一定时间内收入最高的出租车司机。">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-06-13T07:50:35.000Z">
+<meta property="og:image" content="http://yoursite.com/2019/06/14/Flink-learning-in-action-3/image-20190617122740489.png">
+<meta property="og:image" content="http://yoursite.com/2019/06/14/Flink-learning-in-action-3/image-20190617122848797.png">
+<meta property="og:image" content="http://yoursite.com/2019/06/14/Flink-learning-in-action-3/image-20190620053831246.png">
+<meta property="og:updated_time" content="2019-06-19T22:04:21.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Flink之获取topNWord">
-<meta name="twitter:description" content="本片文章基于上一篇文章的逻辑上增加获取topN的逻辑，可以加深对Flink的认识。">
+<meta name="twitter:title" content="Flink之收入最高出租车司机">
+<meta name="twitter:description" content="本篇文章使用纽约市2009-1015年关于出租车驾驶的公共数据集，模拟现实数据流，获取一定时间内收入最高的出租车司机。">
+<meta name="twitter:image" content="http://yoursite.com/2019/06/14/Flink-learning-in-action-3/image-20190617122740489.png">
 
 
 
@@ -115,7 +119,7 @@
 
   
   
-  <link rel="canonical" href="http://yoursite.com/2019/06/12/Flink-learning-in-action-2/">
+  <link rel="canonical" href="http://yoursite.com/2019/06/14/Flink-learning-in-action-3/">
 
 
 
@@ -125,7 +129,7 @@
   };
 </script>
 
-  <title>Flink之获取topNWord | lasbun's blog</title>
+  <title>Flink之收入最高出租车司机 | lasbun's blog</title>
   
 
 
@@ -336,7 +340,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/12/Flink-learning-in-action-2/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/14/Flink-learning-in-action-3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="lasbun">
@@ -353,7 +357,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Flink之获取topNWord
+          <h1 class="post-title" itemprop="name headline">Flink之收入最高出租车司机
 
               
             
@@ -379,7 +383,7 @@
                 
               
 
-              <time title="Created: 2019-06-12 23:40:43" itemprop="dateCreated datePublished" datetime="2019-06-12T23:40:43+08:00">2019-06-12</time>
+              <time title="Created: 2019-06-14 16:31:19" itemprop="dateCreated datePublished" datetime="2019-06-14T16:31:19+08:00">2019-06-14</time>
             
 
             
@@ -396,29 +400,11 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2019-06-13 15:50:35" itemprop="dateModified" datetime="2019-06-13T15:50:35+08:00">2019-06-13</time>
+                <time title="Modified: 2019-06-20 06:04:21" itemprop="dateModified" datetime="2019-06-20T06:04:21+08:00">2019-06-20</time>
               
             
           </span>
 
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Flink/" itemprop="url" rel="index"><span itemprop="name">Flink</span></a></span>
-
-                
-                
-              
-            </span>
           
 
           
@@ -448,34 +434,45 @@
       
 
       
-        <p>本片文章基于<a href="/2019/06/11/Flink-learning-in-action-1/" title="上一篇文章">上一篇文章</a>的逻辑上增加获取topN的逻辑，可以加深对Flink的认识。</p>
+        <p>本篇文章使用纽约市2009-1015年关于出租车驾驶的公共数据集，模拟现实数据流，获取一定时间内收入最高的出租车司机。</p>
 <a id="more"></a>
 
-
-<h3 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h3><a href="/2019/06/11/Flink-learning-in-action-1/" title="上一篇文章">上一篇文章</a>中只是统计并输出了一定时间内的相同单词的次数，这次我们更深入点，统计一定时间内的前N个word.
-
-<h3 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h3><ul>
-<li>获取运行环境</li>
-<li>获取输入源 (socketTextStream)</li>
-<li>对输入源进行算子操作<ul>
-<li>flatMap (拆分成单词，并给个默认值)</li>
-<li>keyby分组</li>
-<li>timeWindow 划分时间窗口</li>
-<li>reduce 对每一个窗口计算相同单词出现的次数</li>
-<li>增加新窗口（里面的数据是上一步统计好次数之后的单词）</li>
-<li>对上面窗口中的数据排序，输出前topN</li>
-<li>print 输出。</li>
-</ul>
-</li>
-</ul>
-<h3 id="部分代码"><a href="#部分代码" class="headerlink" title="部分代码"></a>部分代码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 对输入的数据进行拆分处理</span></span><br><span class="line">    DataStream&lt;Tuple2&lt;String, Long&gt;&gt; ret = socketTextStream.flatMap(split2Word())</span><br><span class="line">        <span class="comment">// 根据tuple2 中的第一个值分组</span></span><br><span class="line">        .keyBy(<span class="number">0</span>)</span><br><span class="line">        <span class="comment">// 设置窗口，每 30s为一个窗口，每5s计算一次</span></span><br><span class="line">        .timeWindow(Time.seconds(<span class="number">30</span>), Time.seconds(<span class="number">5</span>))</span><br><span class="line">        <span class="comment">// 相同字母次数相加</span></span><br><span class="line">        .reduce(CountReduce())</span><br><span class="line">        <span class="comment">// 滑动窗口，每 30s为一个窗口，每5s计算一次 （新增的逻辑）</span></span><br><span class="line">        .windowAll(SlidingProcessingTimeWindows.of(Time.seconds(<span class="number">30</span>), Time.seconds(<span class="number">5</span>)))</span><br><span class="line">        <span class="comment">// 对同一个窗口的所有元素排序取前topSize （新增的逻辑）</span></span><br><span class="line">        .process(<span class="keyword">new</span> TopN(topSize));</span><br></pre></td></tr></table></figure>
-
+<h3 id="输入输出"><a href="#输入输出" class="headerlink" title="输入输出"></a>输入输出</h3><p>输入: 详见下面数据集<br>输出：每个小时收入收入topN的driverId.<br>额外条件：<br>模拟丢失数据。每n条记录丢失一条数据。</p>
+<h3 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h3><p>网站<a href="http://www.nyc.gov/html/tlc/html/home/home.shtml" target="_blank" rel="noopener">New York City Taxi &amp; Limousine Commission</a>提供了关于纽约市从2009-1015年关于出租车驾驶的公共数据集。</p>
 <ul>
-<li>TopN class <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">TopN</span> <span class="keyword">extends</span></span></span><br><span class="line"><span class="class">      <span class="title">ProcessAllWindowFunction</span>&lt;<span class="title">Tuple2</span>&lt;<span class="title">String</span>, <span class="title">Long</span>&gt;, <span class="title">Tuple2</span>&lt;<span class="title">String</span>, <span class="title">Long</span>&gt;, <span class="title">TimeWindow</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> topSize;</span><br><span class="line"></span><br><span class="line">    TopN(<span class="keyword">int</span> topSize) &#123;</span><br><span class="line">      <span class="keyword">this</span>.topSize = topSize;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">process</span><span class="params">(Context context, Iterable&lt;Tuple2&lt;String, Long&gt;&gt; elements,</span></span></span><br><span class="line"><span class="function"><span class="params">        Collector&lt;Tuple2&lt;String, Long&gt;&gt; out)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"></span><br><span class="line">      <span class="comment">/*</span></span><br><span class="line"><span class="comment">      1 先创建一颗有序树，</span></span><br><span class="line"><span class="comment">      2 依次往树里面放数据</span></span><br><span class="line"><span class="comment">      3 如果超过topSize 那么就去掉树的最后一个节点</span></span><br><span class="line"><span class="comment">       */</span></span><br><span class="line"></span><br><span class="line">      TreeMap&lt;Long, Tuple2&lt;String, Long&gt;&gt; treeMap = <span class="keyword">new</span> TreeMap&lt;&gt;(</span><br><span class="line">          <span class="keyword">new</span> Comparator&lt;Long&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(Long o1, Long o2)</span> </span>&#123;</span><br><span class="line">              <span class="keyword">return</span> o2 &gt; o1 ? <span class="number">1</span> : -<span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">      );</span><br><span class="line"></span><br><span class="line">      <span class="keyword">for</span> (Tuple2&lt;String, Long&gt; element : elements) &#123;</span><br><span class="line"></span><br><span class="line">        treeMap.put(element.f1, element);</span><br><span class="line">        <span class="keyword">if</span> (treeMap.size() &gt; <span class="keyword">this</span>.topSize) &#123;</span><br><span class="line">          treeMap.pollLastEntry();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">for</span> (Entry&lt;Long, Tuple2&lt;String, Long&gt;&gt; longTuple2Entry : treeMap.entrySet()) &#123;</span><br><span class="line">        out.collect(longTuple2Entry.getValue());</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<li>下载：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget http://training.ververica.com/trainingData/nycTaxiRides.gz</span><br><span class="line">wget http://training.ververica.com/trainingData/nycTaxiFares.gz</span><br></pre></td></tr></table></figure>
 
 </li>
 </ul>
-<h3 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h3><p><a href="https://github.com/LAsbun/Flink-learning-in-action/blob/master/src/main/java/myFlink/stream/task/SocketWindowCountTopN.java" target="_blank" rel="noopener">完整代码请点我</a></p>
+<p>TaxiRides 行程信息。每次出行包含两条记录。分别标识为 行程开始start 和 行程结束end。<br>数据集结构</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">rideId         : Long      // 唯一行程id</span><br><span class="line">taxiId         : Long      // 出租车唯一id </span><br><span class="line">driverId       : Long      // 出租车司机唯一id</span><br><span class="line">isStart        : Boolean   // 是否是行程开始。false标识行程结束 </span><br><span class="line">startTime      : DateTime  // 行程开始时间</span><br><span class="line">endTime        : DateTime  // 行程结束时间 对于行程开始记录该值为 1970-01-01 00:00:00</span><br><span class="line">startLon       : Float     // 开始行程的经度</span><br><span class="line">startLat       : Float     // 开始行程的纬度</span><br><span class="line">endLon         : Float     // 结束的经度</span><br><span class="line">endLat         : Float     // 结束的纬度</span><br><span class="line">passengerCnt   : Short     // 乘客数量</span><br></pre></td></tr></table></figure>
+
+<p>TaxiRides 数据示例</p>
+<img src="/2019/06/14/Flink-learning-in-action-3/image-20190617122740489.png" title="TaxiRides 数据示例">
+
+<p>TaxiFares 费用信息。 与上面行程信息对应</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">rideId         : Long      // 唯一行程id</span><br><span class="line">taxiId         : Long      // 出租车唯一id</span><br><span class="line">driverId       : Long      // 出租车司机唯一id</span><br><span class="line">startTime      : DateTime  // 行程开始时间</span><br><span class="line">paymentType    : String    // CSH or CRD</span><br><span class="line">tip            : Float     // tip for this ride (消费)</span><br><span class="line">tolls          : Float     // tolls for this ride</span><br><span class="line">totalFare      : Float     // total fare collected</span><br></pre></td></tr></table></figure>
+
+<p>TaxiFares 数据示例</p>
+<img src="/2019/06/14/Flink-learning-in-action-3/image-20190617122848797.png" title="TaxiFares 数据示例">
+
+<h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>通过上面的数据集以及输入输出的要求，可以分析如下：<br>先根据上满两个数据集，生成输入流。再根据ridrId进行join，对join的结果进行窗口分割，最后对窗口内的数据入库计算收入最高的n个driverId.</p>
+<h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><ul>
+<li>生成数据流。（读取上面两个数据集） </li>
+<li>模拟丢失数据 filter</li>
+<li>根据routId 将两个输入流join (这里其实是过滤掉了filter过滤掉的数据的对应数据)</li>
+<li>对上面join的结果划分窗口，并以driverId分组计算窗口内收入，(这里就是简单对taxiFare进行取topN)</li>
+<li>选出topN</li>
+<li>输出。</li>
+</ul>
+<h3 id="部分核心实现"><a href="#部分核心实现" class="headerlink" title="部分核心实现"></a>部分核心实现</h3><p>新建两个class 表示ride和fare <a href="https://github.com/LAsbun/flink-learning-in-action/tree/master/src/main/java/myflink/entity" target="_blank" rel="noopener"><strong>完整代码</strong></a></p>
+<p>对应source <a href="https://github.com/LAsbun/flink-learning-in-action/tree/master/src/main/java/myflink/stream/source" target="_blank" rel="noopener"><strong>完整代码</strong></a></p>
+<p>主要逻辑 <a href="https://github.com/LAsbun/flink-learning-in-action/blob/master/src/main/java/myflink/stream/task/RideAndFareExercise.java" target="_blank" rel="noopener"><strong>完整代码</strong></a></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 初始化enviorment</span></span><br><span class="line">    StreamExecutionEnvironment environment = StreamExecutionEnvironment.getExecutionEnvironment();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置事件事件</span></span><br><span class="line">    environment.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 读取输入流</span></span><br><span class="line">    DataStreamSource&lt;TaxiFare&gt; taxiFareDataStreamSource = environment</span><br><span class="line">        .addSource(<span class="keyword">new</span> TaxiFareSource());</span><br><span class="line"></span><br><span class="line">    DataStream&lt;TaxiFare&gt; taxiFare = taxiFareDataStreamSource</span><br><span class="line">        .keyBy(<span class="keyword">new</span> KeySelector&lt;TaxiFare, Long&gt;() &#123;</span><br><span class="line">          <span class="meta">@Override</span></span><br><span class="line">          <span class="function"><span class="keyword">public</span> Long <span class="title">getKey</span><span class="params">(TaxiFare value)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> value.getRideId();</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">//    taxiFareDataStreamSource.print();</span></span><br><span class="line">    DataStreamSource&lt;TaxiRide&gt; taxiRideDataStreamSource = environment</span><br><span class="line">        .addSource(<span class="keyword">new</span> TaxiRideSource());</span><br><span class="line"></span><br><span class="line"><span class="comment">//    taxiRideDataStreamSource.print();</span></span><br><span class="line">    <span class="comment">// 对source 过滤掉rided % 1000 == 0, 模拟现实世界丢失数据</span></span><br><span class="line">    DataStream&lt;TaxiRide&gt; taxiRide = taxiRideDataStreamSource.filter(<span class="keyword">new</span> FilterFunction&lt;TaxiRide&gt;() &#123;</span><br><span class="line">      <span class="meta">@Override</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">filter</span><span class="params">(TaxiRide value)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> value.isStart &amp;&amp; value.getRideId() % <span class="number">1000</span> != <span class="number">0</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">        .keyBy(<span class="keyword">new</span> KeySelector&lt;TaxiRide, Long&gt;() &#123;</span><br><span class="line">          <span class="meta">@Override</span></span><br><span class="line">          <span class="function"><span class="keyword">public</span> Long <span class="title">getKey</span><span class="params">(TaxiRide value)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> value.getRideId();</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// join 将两个输入流以rideId为key， 合并</span></span><br><span class="line">    SingleOutputStreamOperator&lt;Tuple2&lt;TaxiFare, TaxiRide&gt;&gt; process = taxiFare.connect(taxiRide)</span><br><span class="line">        .process(<span class="keyword">new</span> ConnectProcess());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置窗口</span></span><br><span class="line">    SingleOutputStreamOperator&lt;Tuple3&lt;Long, Float, Timestamp&gt;&gt; aggregate = process</span><br><span class="line">        <span class="comment">// 先将taxiFare 筛选出来，因为是要统计topN taxiFare</span></span><br><span class="line">        .flatMap(<span class="keyword">new</span> FlatMapFunction&lt;Tuple2&lt;TaxiFare, TaxiRide&gt;, TaxiFare&gt;() &#123;</span><br><span class="line">          <span class="meta">@Override</span></span><br><span class="line">          <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">flatMap</span><span class="params">(Tuple2&lt;TaxiFare, TaxiRide&gt; value, Collector&lt;TaxiFare&gt; out)</span></span></span><br><span class="line"><span class="function">              <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">            out.collect(value.f0);</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">        <span class="comment">// 因为是时间递增，所以watermark 很简单</span></span><br><span class="line">        .assignTimestampsAndWatermarks(<span class="keyword">new</span> AscendingTimestampExtractor&lt;TaxiFare&gt;() &#123;</span><br><span class="line">          <span class="meta">@Override</span></span><br><span class="line">          <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">extractAscendingTimestamp</span><span class="params">(TaxiFare element)</span> </span>&#123;</span><br><span class="line"><span class="comment">//            System.out.println(element.getEventTime());</span></span><br><span class="line">            <span class="keyword">return</span> element.getEventTime();</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">        <span class="comment">// 根据 driverId 分组</span></span><br><span class="line">        .keyBy(<span class="keyword">new</span> KeySelector&lt;TaxiFare, Long&gt;() &#123;</span><br><span class="line">          <span class="meta">@Override</span></span><br><span class="line">          <span class="function"><span class="keyword">public</span> Long <span class="title">getKey</span><span class="params">(TaxiFare value)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> value.getDriverId();</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">        <span class="comment">// 设置时间窗口，每30min 计算一次最近1个小时的内driverId的总收入</span></span><br><span class="line">        .timeWindow(Time.hours(<span class="number">1</span>), Time.minutes(<span class="number">30</span>))</span><br><span class="line">        <span class="comment">// 这个是累加函数,调用aggregate 结果会计算出同一个窗口中，每个driverId的收入总值</span></span><br><span class="line">        .aggregate(getAggregateFunction(),</span><br><span class="line">            <span class="comment">// 这个windowFunc 是格式化输出</span></span><br><span class="line">            <span class="keyword">new</span> WindowFunction&lt;Float, Tuple3&lt;Long, Float, Timestamp&gt;, Long, TimeWindow&gt;() &#123;</span><br><span class="line">              <span class="meta">@Override</span></span><br><span class="line">              <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">apply</span><span class="params">(Long driverId, TimeWindow window, Iterable&lt;Float&gt; input,</span></span></span><br><span class="line"><span class="function"><span class="params">                  Collector&lt;Tuple3&lt;Long, Float, Timestamp&gt;&gt; out)</span></span></span><br><span class="line"><span class="function">                  <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                Float next = input.iterator().next();</span><br><span class="line">                out.collect(<span class="keyword">new</span> Tuple3(driverId, next, <span class="keyword">new</span> Timestamp(window.getEnd())));</span><br><span class="line">              &#125;</span><br><span class="line">            &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// topSize N</span></span><br><span class="line">    <span class="keyword">int</span> topSize = <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line">    aggregate</span><br><span class="line">        <span class="comment">// 根据时间进行分窗口</span></span><br><span class="line">        .keyBy(<span class="number">2</span>)</span><br><span class="line">        .timeWindow(Time.hours(<span class="number">1</span>), Time.minutes(<span class="number">30</span>))</span><br><span class="line">        .process(<span class="keyword">new</span> topN(topSize)).print();</span><br><span class="line">    environment.execute(<span class="string">"RideAndFareExercise"</span>);</span><br><span class="line"></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="运行结果"><a href="#运行结果" class="headerlink" title="运行结果"></a>运行结果</h3><img src="/2019/06/14/Flink-learning-in-action-3/image-20190620053831246.png" title="TaxiFares 数据示例">
+
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p>[ververica]<a href="https://training.ververica.com/" target="_blank" rel="noopener">https://training.ververica.com/</a> </p>
 
       
     </div>
@@ -512,8 +509,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/06/11/Flink-learning-in-action-1/" rel="next" title="Flink之第一个Flink程序">
-                <i class="fa fa-chevron-left"></i> Flink之第一个Flink程序
+              <a href="/2019/06/12/Flink-learning-in-action-2/" rel="next" title="Flink之获取topNWord">
+                <i class="fa fa-chevron-left"></i> Flink之获取topNWord
               </a>
             
           </div>
@@ -521,10 +518,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/06/14/Flink-learning-in-action-3/" rel="prev" title="Flink之收入最高出租车司机">
-                Flink之收入最高出租车司机 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -667,7 +660,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#描述"><span class="nav-number">1.</span> <span class="nav-text">描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#思路："><span class="nav-number">2.</span> <span class="nav-text">思路：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#部分代码"><span class="nav-number">3.</span> <span class="nav-text">部分代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#完整代码"><span class="nav-number">4.</span> <span class="nav-text">完整代码</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#输入输出"><span class="nav-number">1.</span> <span class="nav-text">输入输出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据集"><span class="nav-number">2.</span> <span class="nav-text">数据集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分析"><span class="nav-number">3.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#思路"><span class="nav-number">4.</span> <span class="nav-text">思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#部分核心实现"><span class="nav-number">5.</span> <span class="nav-text">部分核心实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运行结果"><span class="nav-number">6.</span> <span class="nav-text">运行结果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">7.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>

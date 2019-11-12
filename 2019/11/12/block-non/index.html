@@ -96,18 +96,18 @@
 
 
 
-  <meta name="description" content="final finally finalize 区别">
-<meta name="keywords" content="java">
+  <meta name="description" content="同步，异步，阻塞，非阻塞是日常开发中经常聊的，但是真正说起来什么是这些东西的时候，还是有点绕. so 找找资料记录下.">
+<meta name="keywords" content="概念">
 <meta property="og:type" content="article">
-<meta property="og:title" content="java 基础学习之final finally finalize 区别">
-<meta property="og:url" content="http://yoursite.com/2019/02/12/java 基础学习/final finally finalize 区别/index.html">
+<meta property="og:title" content="同步，异步，阻塞，非阻塞">
+<meta property="og:url" content="http://yoursite.com/2019/11/12/block-non/index.html">
 <meta property="og:site_name" content="lasbun&#39;s blog">
-<meta property="og:description" content="final finally finalize 区别">
+<meta property="og:description" content="同步，异步，阻塞，非阻塞是日常开发中经常聊的，但是真正说起来什么是这些东西的时候，还是有点绕. so 找找资料记录下.">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-07-29T14:35:42.000Z">
+<meta property="og:updated_time" content="2019-11-12T12:37:08.179Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="java 基础学习之final finally finalize 区别">
-<meta name="twitter:description" content="final finally finalize 区别">
+<meta name="twitter:title" content="同步，异步，阻塞，非阻塞">
+<meta name="twitter:description" content="同步，异步，阻塞，非阻塞是日常开发中经常聊的，但是真正说起来什么是这些东西的时候，还是有点绕. so 找找资料记录下.">
 
 
 
@@ -115,7 +115,7 @@
 
   
   
-  <link rel="canonical" href="http://yoursite.com/2019/02/12/java 基础学习/final finally finalize 区别/">
+  <link rel="canonical" href="http://yoursite.com/2019/11/12/block-non/">
 
 
 
@@ -125,7 +125,7 @@
   };
 </script>
 
-  <title>java 基础学习之final finally finalize 区别 | lasbun's blog</title>
+  <title>同步，异步，阻塞，非阻塞 | lasbun's blog</title>
   
 
 
@@ -336,7 +336,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/12/java 基础学习/final finally finalize 区别/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/12/block-non/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="lasbun">
@@ -353,7 +353,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">java 基础学习之final finally finalize 区别
+          <h1 class="post-title" itemprop="name headline">同步，异步，阻塞，非阻塞
 
               
             
@@ -379,24 +379,12 @@
                 
               
 
-              <time title="Created: 2019-02-12 14:03:22" itemprop="dateCreated datePublished" datetime="2019-02-12T14:03:22+08:00">2019-02-12</time>
+              <time title="Created: 2019-11-12 20:07:22 / Modified: 20:37:08" itemprop="dateCreated datePublished" datetime="2019-11-12T20:07:22+08:00">2019-11-12</time>
             
 
             
               
 
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2019-07-29 22:35:42" itemprop="dateModified" datetime="2019-07-29T22:35:42+08:00">2019-07-29</time>
               
             
           </span>
@@ -430,65 +418,21 @@
       
 
       
-        <p>final finally finalize 区别</p>
+        <p>同步，异步，阻塞，非阻塞是日常开发中经常聊的，但是真正说起来什么是这些东西的时候，还是有点绕. so 找找资料记录下.</p>
 <a id="more"></a>
 
-<ul>
-<li><p>final finally finalize 区别</p>
-<ul>
-<li><p>final (可以修饰 类 方法 变量)</p>
-<ul>
-<li>修饰类 <ul>
-<li>表示不允许继承<ul>
-<li>final类中所有的成员方法都会隐式的定义为final方法。</li>
+
+<h3 id="重要"><a href="#重要" class="headerlink" title="重要"></a>重要</h3><ul>
+<li>阻塞和非阻塞描述的是调用方。</li>
+<li>同步与异步描述的是被调用方</li>
 </ul>
-</li>
-</ul>
-</li>
-<li>修饰方法<ul>
-<li>表示子类不能重写此方法<ul>
-<li>提高效率</li>
-<li>锁定方法</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>修饰变量<ul>
-<li>final成员变量表示常量，只能被赋值一次，赋值后其值不再改变</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>finally(跟try…except连用)</p>
-<ul>
-<li>不关有没有异常都会执行。<ul>
-<li>注意：<ul>
-<li>只有当执行的时候，并且没有发生 线程被kill,断电，退出虚拟机等情况(这些情况不会执行finally)，finally才会执行.</li>
-</ul>
-</li>
-<li>特殊<ul>
-<li><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">private int testFinallyString(String str) &#123;</span><br><span class="line"></span><br><span class="line">  try &#123;</span><br><span class="line">    return str.charAt(0) - &apos;0&apos;;</span><br><span class="line">  &#125; catch (NullPointerException e) &#123;</span><br><span class="line">    return 1;</span><br><span class="line">  &#125; catch (StringIndexOutOfBoundsException e) &#123;</span><br><span class="line">    return 2;</span><br><span class="line">  &#125; finally &#123;</span><br><span class="line">    return 6;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 调用函数</span><br><span class="line">System.out.println(testFinallyString(null) + &quot; &quot; + testFinallyString(&quot;0&quot;) + &quot; &quot; + testFinallyString(&quot;&quot;));</span><br><span class="line">// 结果将会输出 6 6 6</span><br><span class="line">// 原因是因为 finally 特殊，会撤销之前的return.</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>finalize(在java.lang.Object里定义的)</p>
-<ul>
-<li>这个方法在gc启动，该对象被回收的时候被调用</li>
-<li>跟析构函数不一样.</li>
-<li>注意：<ul>
-<li>这个跟c++ 中的析构函数是不一样的。 c++ 调用delete 时候，对象就会被删除掉。</li>
-<li>java 里面的调用gc，也不一定会及时删除。而是根据下一个删除动作才会删除</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
+<p>以高科技钓鱼， 鱼咬钩之后会报警为例。</p>
+<p>A调用B</p>
+<h3 id="阻塞"><a href="#阻塞" class="headerlink" title="阻塞"></a>阻塞</h3><p>抛竿之后，就一直看着鱼竿等着鱼咬钩<br>A调用B，A一直等着B返回，在这期间A啥也不干</p>
+<h3 id="非阻塞"><a href="#非阻塞" class="headerlink" title="非阻塞"></a>非阻塞</h3><p>抛竿之后，开始玩手机，不需要一直看鱼竿<br>A调用B， A不用等着B,可以先忙着其他。</p>
+<h3 id="同步"><a href="#同步" class="headerlink" title="同步"></a>同步</h3><p>鱼咬钩,告警器才亮<br>A调用B, B结束了之后才给A返回</p>
+<h3 id="异步"><a href="#异步" class="headerlink" title="异步"></a>异步</h3><p>鱼竿抛出之后，鱼没有咬钩，但是告警器可以闪烁<br>A调用B, B先给A返回我收到了，等B结束之后再通过其他方式通知A（回调）</p>
+<p><a href="https://mp.weixin.qq.com/s/LgC43CL8TqkvbIwkJmVHrQ" target="_blank" rel="noopener">参考 漫话编程文章</a></p>
 
       
     </div>
@@ -512,7 +456,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/java/" rel="tag"># java</a>
+            <a href="/tags/概念/" rel="tag"># 概念</a>
           
         </div>
       
@@ -525,8 +469,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/02/11/java 基础学习/面向对象的特征与特性/" rel="next" title="面向对象的特征与特性">
-                <i class="fa fa-chevron-left"></i> 面向对象的特征与特性
+              <a href="/2019/11/12/io-model/" rel="next" title="io模型">
+                <i class="fa fa-chevron-left"></i> io模型
               </a>
             
           </div>
@@ -534,10 +478,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/02/12/java 基础学习/int 与Integer区别/" rel="prev" title="java 基础学习之int 与 Integer 区别">
-                java 基础学习之int 与 Integer 区别 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -581,8 +521,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <div class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -690,6 +639,23 @@
         </div>
       </div>
 
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#重要"><span class="nav-number">1.</span> <span class="nav-text">重要</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#阻塞"><span class="nav-number">2.</span> <span class="nav-text">阻塞</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#非阻塞"><span class="nav-number">3.</span> <span class="nav-text">非阻塞</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#同步"><span class="nav-number">4.</span> <span class="nav-text">同步</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#异步"><span class="nav-number">5.</span> <span class="nav-text">异步</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
       
 
       

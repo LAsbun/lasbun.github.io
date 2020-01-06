@@ -1,9 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[java concurrent包]]></title>
+    <url>%2F2020%2F01%2F06%2Fjava%20%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%2Fjava-concurrent%2F</url>
+    <content type="text"><![CDATA[通过本片文章，你可以了解到：java concurrent 包基本架构 先来一张图镇楼 相关模块(从底部向上) volatile 变量读写/CAS (底层实现) 这两个能够保证线程对于同一个变量进行修改 一定是对最新的变量值修改或者是读取。保证数据的正确性。实现基于共享内存模型线程间通讯 java 中volatile简单理解： 如果一个变量被volatile修饰，那么对于任意线程对于该线程的读写都可以被其他线程看到。 CAS 无锁对数据进行修改 AQS/非阻塞数据结构/原子变量类(底层接口的抽象封装) Lock/同步锁/阻塞队列/并发容器/Executor (对AQS等进行更高一层的封装) 1本质上其实都是基于volatile以及CAS的类volatile的内存读写语义，保证程序的正确顺序来进行线程间的通信与数据同步。 参考《java并发编程的艺术》方腾飞 魏鹏 程晓明 著]]></content>
+      <tags>
+        <tag>java, 并发编程</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[JAVA中的锁]]></title>
+    <url>%2F2019%2F12%2F23%2Fjava%20%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%2FJAVA%E4%B8%AD%E7%9A%84%E9%94%81%2F</url>
+    <content type="text"><![CDATA[java中的各种锁 本文参考了美团技术团队整理的锁内容 [参考]: https://tech.meituan.com/2018/11/15/java-lock.html “比较详细”]]></content>
+      <tags>
+        <tag>java, 锁</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[并发编程]]></title>
     <url>%2F2019%2F12%2F09%2F%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%2F</url>
-    <content type="text"><![CDATA[通过本片文章，你可以了解到：1 什么是并发编程2 并发编程有哪些挑战3 相关的解决方案 为啥要并发在程序中，并发本质上是提高任务的执行效率，减低程序运行的时间。不多解释 并发遇到的挑战有哪些&amp;&amp;解决方案上下文切换 首先要明确的就是即使是在单核cpu条件下，多线程也是支持的。从操作系统上来讲，CPU通过时间片机制来执行多线程。因为时间片很短，所以在我们看来是多线程并发执行，其实是cpu在内部根据时间片，在某一时间片时间结束后，保存当前线程状态，加载下一个线程之前的状态，然后在下一时间片时间内执行下一个线程的任务。保存当前线程状态，加载下一个线程的状态，其实就是上下文切换。举例就是说，你看一本英文书，有个词不会，然后你去翻词典，查到这个词，然后再回来继续读。去翻词典然后再回来继续读，这样读书效率不高的。 上下文切换解决方案本质上是减少上下文切换，或者是不使用系统切换。 无锁并发编程 多线程竞争锁的时候会进行上线文切换 CAS算法 CAS算法是无锁编程的一种算法 使用最小线程 使用最小的线程，以避免大量空闲线程等待浪费切换时间 使用协程 协程简单理解就是用户级的上下文切换，比系统上下文切换减少切换时间 死锁 作为开发，对于死锁肯定是不会陌生。如果你写的程序遇到了线程死锁，正常运行就有问题，更不用说并发来减少运行时间，反倒要延长时间。 死锁解决方案其实就是减少死锁。常见的有避免一个线程获取多个锁，使用定时锁（超过时间就释放掉）等等 资源限制 一台1核1G的服务器，可能最多支持同时跑40个线程，超过这个限制，cpu就会陷入疯狂切换上下文，也就执行不了实际的任务。或者说网络带宽是1M/s, 开多少线程也顶多下载速度是1M/s。 资源限制解决方案两个方向一是从程序上减少资源的浪费二是增加资源 参考《java并发的艺术》方腾飞 魏鹏 程晓明 著]]></content>
+    <content type="text"><![CDATA[通过本片文章，你可以了解到：1 什么是并发编程2 并发编程有哪些挑战3 相关的解决方案 为啥要并发在程序中，并发本质上是提高任务的执行效率，减低程序运行的时间。不多解释 并发遇到的挑战有哪些&amp;&amp;解决方案上下文切换 首先要明确的就是即使是在单核cpu条件下，多线程也是支持的。从操作系统上来讲，CPU通过时间片机制来执行多线程。因为时间片很短，所以在我们看来是多线程并发执行，其实是cpu在内部根据时间片，在某一时间片时间结束后，保存当前线程状态，加载下一个线程之前的状态，然后在下一时间片时间内执行下一个线程的任务。保存当前线程状态，加载下一个线程的状态，其实就是上下文切换。举例就是说，你看一本英文书，有个词不会，然后你去翻词典，查到这个词，然后再回来继续读。去翻词典然后再回来继续读，这样读书效率不高的。 上下文切换解决方案本质上是减少上下文切换，或者是不使用系统切换。 无锁并发编程 多线程竞争锁的时候会进行上线文切换 CAS算法 CAS算法是无锁编程的一种算法 使用最小线程 使用最小的线程，以避免大量空闲线程等待浪费切换时间 使用协程 协程简单理解就是用户级的上下文切换，比系统上下文切换减少切换时间 死锁 作为开发，对于死锁肯定是不会陌生。如果你写的程序遇到了线程死锁，正常运行就有问题，更不用说并发来减少运行时间，反倒要延长时间。 死锁解决方案其实就是减少死锁。常见的有避免一个线程获取多个锁，使用定时锁（超过时间就释放掉）等等 资源限制 一台1核1G的服务器，可能最多支持同时跑40个线程，超过这个限制，cpu就会陷入疯狂切换上下文，也就执行不了实际的任务。或者说网络带宽是1M/s, 开多少线程也顶多下载速度是1M/s。 资源限制解决方案两个方向一是从程序上减少资源的浪费二是增加资源 参考《java并发编程的艺术》方腾飞 魏鹏 程晓明 著]]></content>
       <tags>
         <tag>并发编程</tag>
       </tags>
@@ -308,7 +324,7 @@
   </entry>
   <entry>
     <title><![CDATA[thread-state]]></title>
-    <url>%2F2019%2F11%2F25%2Fjava%2Fthread-state%2F</url>
+    <url>%2F2019%2F11%2F25%2Fjava%20%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%2Fthread-state%2F</url>
     <content type="text"><![CDATA[本文章介绍 Java Thread State各种状态.通过本篇文章你可以了解到：1 Java 线程中都有哪些状态2 这些状态之间的联系是怎样的3 使用jstack查看运行中的线程状态 Java 线程中的状态其实只要看下Thread.State源码就可以知道有几种类型了 1234567891011121314151617181920212223242526272829303132333435363738394041424344public enum State &#123; /** * 初始状态。线程刚创建，还没有调用start() */ NEW, /** * 正在运行的状态（java 将系统中的Ready和运行都笼统的成为运行中）。正在运行的线程有可能处于等待状态。例如等待系统io */ RUNNABLE, /** * 阻塞状态。等待锁的释放 */ BLOCKED, /** * 等待状态 * 线程变为等待状态，分为下面三种情况 * 1 Object.wait() 并且没有timeout参数 * 2 Thread.join 没有timeout参数 * 3 LockSupport.park() * 例如： * 一个线程调用了Object.wait(). 直到另外的线程调用了该Object.notify()或者是Object.notify()方法才会解除waiting状态。 */ WAITING, /** * 超时等待状态。等待一定时间后，自动释放该状态 * 例如：调用了下面的函数并有时间相关参数 * &lt;li&gt;&#123;@link #sleep Thread.sleep&#125;&lt;/li&gt; * &lt;li&gt;&#123;@link Object#wait(long) Object.wait&#125; with timeout&lt;/li&gt; * &lt;li&gt;&#123;@link #join(long) Thread.join&#125; with timeout&lt;/li&gt; * &lt;li&gt;&#123;@link LockSupport#parkNanos LockSupport.parkNanos&#125;&lt;/li&gt; * &lt;li&gt;&#123;@link LockSupport#parkUntil LockSupport.parkUntil&#125;&lt;/li&gt; * &lt;/ul&gt; */ TIMED_WAITING, /** * 线程终止状态 */ TERMINATED; &#125; 这些状态之间的联系是怎样的具体见下图（图源《Java 并发编程艺术》4.1.4节） 从上图可以到 1 初始化线程状态表示为New. 调用Thread.start()转换状态为RUNNABLE 2 调用Object.wait()/Object.join()/LockSupport.park会由RUNNABLE转换为WAITING转态。调用Object.notify()/Object.notifyAll()/LockSupport.unpark()才会由，WAITING转为RUNABLE 3 调用Thread.sleep(long)/Object.wait(long)/Thread.join(long)/LockSupport.pardNanos(long)/LockSupport.parkUntil(long) 由 RUNNABLE-&gt; TIMED_WAITING 反之通过Object.notify()/Object.notifyAll()/LockSupport.unpark()才会由，TIMED_WAITING转为RUNABLE 4 在调用synchronized函数时候，未获取到锁，会变为BLOCKED。 获取到之后即变为RUNNABLE 5 执行完成之后转换为TERMINATED 使用jstack查看运行中的线程状态 NEW 1234567@Testpublic void testNew() &#123; Thread thread = new Thread(); System.out.println(thread.getState()); // NEW&#125; RUNNABEL &amp;&amp; WAITING 1234567891011121314@Testpublic void testRunnable() throws InterruptedException &#123; Thread testRunnable = new Thread(new Runnable() &#123; @Override public void run() &#123; for (int i = 0; i &lt; Integer.MAX_VALUE; i++) &#123; System.out.println(i); &#125; &#125; &#125;, &quot;testRunnable&quot;); testRunnable.start(); testRunnable.join();&#125; testRunnable 线程是在运行 main此时状态为WAITING. 因为调用了thread.join函数 BLOCKED &amp;&amp; WAITING 123456789101112131415161718192021222324252627282930313233343536373839public static void main(String[] args)&#123; final Object lock = new Object(); Thread waitingA = new Thread(new Runnable() &#123; @Override public void run() &#123; synchronized (lock) &#123; try &#123; Thread.sleep(20000); System.out.println(&quot;waiting&quot;); &#125; catch (InterruptedException e) &#123; e.printStackTrace(); &#125; &#125; &#125; &#125;, &quot;waitingA&quot;); Thread waitingB = new Thread(new Runnable() &#123; @Override public void run() &#123; synchronized (lock) &#123; try &#123; Thread.sleep(20000); System.out.println(&quot;waiting&quot;); &#125; catch (InterruptedException e) &#123; e.printStackTrace(); &#125; &#125; &#125; &#125;, &quot;waitingB&quot;); waitingA.start(); waitingB.start();&#125; 可以看下图中 A TIMED_WAITING B因为A获取到了lock，而为BLOCKED状态]]></content>
       <tags>
         <tag>java, Thread-State</tag>

@@ -96,23 +96,13 @@
 
 
 
-  <meta name="description" content="本文章介绍 Java Thread State各种状态.通过本篇文章你可以了解到：1 Java 线程中都有哪些状态2 这些状态之间的联系是怎样的3 使用jstack查看运行中的线程状态">
-<meta name="keywords" content="java, Thread-State">
-<meta property="og:type" content="article">
-<meta property="og:title" content="thread-state">
-<meta property="og:url" content="http://yoursite.com/2019/11/25/java/thread-state/index.html">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="lasbun&#39;s blog">
+<meta property="og:url" content="http://yoursite.com/tags/java-并发编程/index.html">
 <meta property="og:site_name" content="lasbun&#39;s blog">
-<meta property="og:description" content="本文章介绍 Java Thread State各种状态.通过本篇文章你可以了解到：1 Java 线程中都有哪些状态2 这些状态之间的联系是怎样的3 使用jstack查看运行中的线程状态">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/2019/11/25/java/thread-state/image-20191125232222723.png">
-<meta property="og:image" content="http://yoursite.com/2019/11/25/java/thread-state/image-20191125234826763.png">
-<meta property="og:image" content="http://yoursite.com/2019/11/25/java/thread-state/image-20191125235543225.png">
-<meta property="og:image" content="http://yoursite.com/2019/11/25/java/thread-state/image-20191126001024171.png">
-<meta property="og:updated_time" content="2019-12-03T12:20:23.819Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="thread-state">
-<meta name="twitter:description" content="本文章介绍 Java Thread State各种状态.通过本篇文章你可以了解到：1 Java 线程中都有哪些状态2 这些状态之间的联系是怎样的3 使用jstack查看运行中的线程状态">
-<meta name="twitter:image" content="http://yoursite.com/2019/11/25/java/thread-state/image-20191125232222723.png">
+<meta name="twitter:title" content="lasbun&#39;s blog">
 
 
 
@@ -120,7 +110,7 @@
 
   
   
-  <link rel="canonical" href="http://yoursite.com/2019/11/25/java/thread-state/">
+  <link rel="canonical" href="http://yoursite.com/tags/java-并发编程/">
 
 
 
@@ -130,7 +120,7 @@
   };
 </script>
 
-  <title>thread-state | lasbun's blog</title>
+  <title>Tag: java, 并发编程 | lasbun's blog</title>
   
 
 
@@ -178,7 +168,7 @@
     
   
 
-  <div class="container sidebar-position-left page-post-detail">
+  <div class="container sidebar-position-left ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -233,7 +223,7 @@
         
         
           
-          <li class="menu-item menu-item-tags">
+          <li class="menu-item menu-item-tags menu-item-active">
 
     
     
@@ -280,6 +270,22 @@
   
     
 
+    
+    
+      
+      
+    
+      
+      
+    
+      
+      
+    
+    
+
+  
+
+
   
 
   
@@ -325,226 +331,57 @@
           <div id="content" class="content">
             
 
-  <div id="posts" class="posts-expand">
-    
+  
+  
+  
+  <div class="post-block tag">
 
-  
+    <div id="posts" class="posts-collapse">
+      <div class="collection-title">
+        <h1>java, 并发编程<small>Tag</small>
+        </h1>
+      </div>
 
-  
-  
-  
-
-  
+      
+        
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/25/java/thread-state/">
+    <header class="post-header">
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="lasbun">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="lasbun's blog">
-    </span>
-
-    
-      <header class="post-header">
-
+      <h2 class="post-title">
         
+          <a class="post-title-link" href="/2020/01/06/java 基础学习/java-concurrent/" itemprop="url">
+            
+              <span itemprop="name">java concurrent包</span>
+            
+          </a>
         
-          <h1 class="post-title" itemprop="name headline">thread-state
+      </h2>
 
-              
-            
-          </h1>
-        
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated" datetime="2020-01-06T23:55:43+08:00" content="2020-01-06">
+          01-06
+        </time>
+      </div>
 
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2019-11-25 20:36:07" itemprop="dateCreated datePublished" datetime="2019-11-25T20:36:07+08:00">2019-11-25</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2019-12-03 20:20:23" itemprop="dateModified" datetime="2019-12-03T20:20:23+08:00">2019-12-03</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        <p>本文章介绍 Java Thread State各种状态.通过本篇文章你可以了解到：<br>1 Java 线程中都有哪些状态<br>2 这些状态之间的联系是怎样的<br>3 使用jstack查看运行中的线程状态</p>
-<a id="more"></a>
-
-<h2 id="Java-线程中的状态"><a href="#Java-线程中的状态" class="headerlink" title="Java 线程中的状态"></a>Java 线程中的状态</h2><p>其实只要看下Thread.State源码就可以知道有几种类型了</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">public enum State &#123;</span><br><span class="line">        /**</span><br><span class="line">         * 初始状态。线程刚创建，还没有调用start()</span><br><span class="line">         */</span><br><span class="line">        NEW,</span><br><span class="line"></span><br><span class="line">        /**</span><br><span class="line">         * 正在运行的状态（java 将系统中的Ready和运行都笼统的成为运行中）。正在运行的线程有可能处于等待状态。例如等待系统io</span><br><span class="line">         */</span><br><span class="line">        RUNNABLE,</span><br><span class="line"></span><br><span class="line">        /**</span><br><span class="line">         * 阻塞状态。等待锁的释放</span><br><span class="line">         */</span><br><span class="line">        BLOCKED,</span><br><span class="line"></span><br><span class="line">        /**</span><br><span class="line">         * 等待状态</span><br><span class="line">         * 线程变为等待状态，分为下面三种情况</span><br><span class="line">         * 1 Object.wait() 并且没有timeout参数</span><br><span class="line">         * 2 Thread.join 没有timeout参数</span><br><span class="line">         * 3 LockSupport.park()</span><br><span class="line">				 * 例如：</span><br><span class="line">         *  一个线程调用了Object.wait(). 直到另外的线程调用了该Object.notify()或者是Object.notify()方法才会解除waiting状态。</span><br><span class="line">         */</span><br><span class="line">        WAITING,</span><br><span class="line"></span><br><span class="line">        /**</span><br><span class="line">         * 超时等待状态。等待一定时间后，自动释放该状态</span><br><span class="line">         * 例如：调用了下面的函数并有时间相关参数</span><br><span class="line">         *   &lt;li&gt;&#123;@link #sleep Thread.sleep&#125;&lt;/li&gt;</span><br><span class="line">         *   &lt;li&gt;&#123;@link Object#wait(long) Object.wait&#125; with timeout&lt;/li&gt;</span><br><span class="line">         *   &lt;li&gt;&#123;@link #join(long) Thread.join&#125; with timeout&lt;/li&gt;</span><br><span class="line">         *   &lt;li&gt;&#123;@link LockSupport#parkNanos LockSupport.parkNanos&#125;&lt;/li&gt;</span><br><span class="line">         *   &lt;li&gt;&#123;@link LockSupport#parkUntil LockSupport.parkUntil&#125;&lt;/li&gt;</span><br><span class="line">         * &lt;/ul&gt;</span><br><span class="line">         */</span><br><span class="line">        TIMED_WAITING,</span><br><span class="line"></span><br><span class="line">        /**</span><br><span class="line">         * 线程终止状态</span><br><span class="line">         */</span><br><span class="line">        TERMINATED;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="这些状态之间的联系是怎样的"><a href="#这些状态之间的联系是怎样的" class="headerlink" title="这些状态之间的联系是怎样的"></a>这些状态之间的联系是怎样的</h2><p>具体见下图（图源《Java 并发编程艺术》4.1.4节）</p>
-<img src="/2019/11/25/java/thread-state/image-20191125232222723.png" title="[title]">
-
-<p>从上图可以到</p>
-<p>1 初始化线程状态表示为New. 调用Thread.start()转换状态为RUNNABLE</p>
-<p>2 调用Object.wait()/Object.join()/LockSupport.park会由RUNNABLE转换为WAITING转态。调用Object.notify()/Object.notifyAll()/LockSupport.unpark()才会由，WAITING转为RUNABLE</p>
-<p>3 调用Thread.sleep(long)/Object.wait(long)/Thread.join(long)/LockSupport.pardNanos(long)/LockSupport.parkUntil(long) 由 RUNNABLE-&gt; TIMED_WAITING</p>
-<p>反之通过Object.notify()/Object.notifyAll()/LockSupport.unpark()才会由，TIMED_WAITING转为RUNABLE</p>
-<p>4 在调用synchronized函数时候，未获取到锁，会变为BLOCKED。 获取到之后即变为RUNNABLE</p>
-<p>5 执行完成之后转换为TERMINATED</p>
-<h2 id="使用jstack查看运行中的线程状态"><a href="#使用jstack查看运行中的线程状态" class="headerlink" title="使用jstack查看运行中的线程状态"></a>使用jstack查看运行中的线程状态</h2><ul>
-<li><p>NEW</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@Test</span><br><span class="line">public void testNew() &#123;</span><br><span class="line"></span><br><span class="line">  Thread thread = new Thread();</span><br><span class="line">  System.out.println(thread.getState()); // NEW</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>RUNNABEL &amp;&amp; WAITING</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">@Test</span><br><span class="line">public void testRunnable() throws InterruptedException &#123;</span><br><span class="line"></span><br><span class="line">  Thread testRunnable = new Thread(new Runnable() &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void run() &#123;</span><br><span class="line">      for (int i = 0; i &lt; Integer.MAX_VALUE; i++) &#123;</span><br><span class="line">        System.out.println(i);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;, &quot;testRunnable&quot;);</span><br><span class="line">  testRunnable.start();</span><br><span class="line">  testRunnable.join();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-</li>
-</ul>
-<p>testRunnable 线程是在运行</p>
-<img src="/2019/11/25/java/thread-state/image-20191125234826763.png" title="[title]">
-
-<p>main此时状态为WAITING.  因为调用了thread.join函数</p>
-<img src="/2019/11/25/java/thread-state/image-20191125235543225.png" title="[title]">
-
-<p>BLOCKED &amp;&amp; WAITING</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args)&#123;</span><br><span class="line"></span><br><span class="line">  final Object lock = new Object();</span><br><span class="line"></span><br><span class="line">  Thread waitingA = new Thread(new Runnable() &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void run() &#123;</span><br><span class="line">      synchronized (lock) &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">          Thread.sleep(20000);</span><br><span class="line">          System.out.println(&quot;waiting&quot;);</span><br><span class="line">        &#125; catch (InterruptedException e) &#123;</span><br><span class="line">          e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">  &#125;, &quot;waitingA&quot;);</span><br><span class="line"></span><br><span class="line">  Thread waitingB = new Thread(new Runnable() &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void run() &#123;</span><br><span class="line">      synchronized (lock) &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">          Thread.sleep(20000);</span><br><span class="line">          System.out.println(&quot;waiting&quot;);</span><br><span class="line">        &#125; catch (InterruptedException e) &#123;</span><br><span class="line">          e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">  &#125;, &quot;waitingB&quot;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  waitingA.start();</span><br><span class="line">  waitingB.start();</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>可以看下图中 A TIMED_WAITING B因为A获取到了lock，而为BLOCKED状态</p>
-<img src="/2019/11/25/java/thread-state/image-20191126001024171.png" title="[title]">
+    </header>
+  </article>
 
 
       
     </div>
 
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/java-Thread-State/" rel="tag"># java, Thread-State</a>
-          
-        </div>
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2019/11/25/java 基础学习/equal/" rel="next" title="==equals">
-                <i class="fa fa-chevron-left"></i> ==equals
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/12/03/springBoot/spring-boot/" rel="prev" title="spring-boot 运行源码分析">
-                spring-boot 运行源码分析 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
   </div>
   
   
   
-  </article>
-
-
-  </div>
-
-
-          </div>
-          
 
   
 
 
+
+          </div>
+          
 
         </div>
         
@@ -564,17 +401,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            Table of Contents
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            Overview
-          </li>
-        </ul>
-      
 
-      <div class="site-overview-wrap sidebar-panel">
+      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -589,7 +417,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">49</span>
+                    <span class="site-state-item-count">51</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -667,7 +495,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">18</span>
+                      
+                    
+                    <span class="site-state-item-count">20</span>
                     <span class="site-state-item-name">tags</span>
                   </a>
                 </div>
@@ -695,23 +525,6 @@
       </div>
 
       
-      <!--noindex-->
-        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-            
-            
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-线程中的状态"><span class="nav-number">1.</span> <span class="nav-text">Java 线程中的状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#这些状态之间的联系是怎样的"><span class="nav-number">2.</span> <span class="nav-text">这些状态之间的联系是怎样的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用jstack查看运行中的线程状态"><span class="nav-number">3.</span> <span class="nav-text">使用jstack查看运行中的线程状态</span></a></li></ol></div>
-            
-
-          </div>
-        </div>
-      <!--/noindex-->
-      
 
       
 
@@ -726,7 +539,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>
@@ -840,10 +653,6 @@
 
 
   
-  <script src="/js/scrollspy.js?v=7.1.2"></script>
-<script src="/js/post-details.js?v=7.1.2"></script>
-
-
 
   
 
@@ -859,8 +668,6 @@
 
   
 
-
-  
 
 
   

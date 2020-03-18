@@ -96,13 +96,22 @@
 
 
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="lasbun&#39;s blog">
-<meta property="og:url" content="http://yoursite.com/tags/设计模式/index.html">
+  <meta name="description" content="通过本篇，你可以了解到RabbitMQ以及Kafka是如何保证消息队列高可用的">
+<meta name="keywords" content="mq">
+<meta property="og:type" content="article">
+<meta property="og:title" content="聊聊消息队列(二) (如何保证消息队列高可用)">
+<meta property="og:url" content="http://yoursite.com/2020/03/18/MQ-2/index.html">
 <meta property="og:site_name" content="lasbun&#39;s blog">
+<meta property="og:description" content="通过本篇，你可以了解到RabbitMQ以及Kafka是如何保证消息队列高可用的">
 <meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/2020/03/18/MQ-2/image-20200317091616481.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/18/MQ-2/image-20200317135018589.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/18/MQ-2/image-20200318083451830.png">
+<meta property="og:updated_time" content="2020-03-18T00:53:21.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="lasbun&#39;s blog">
+<meta name="twitter:title" content="聊聊消息队列(二) (如何保证消息队列高可用)">
+<meta name="twitter:description" content="通过本篇，你可以了解到RabbitMQ以及Kafka是如何保证消息队列高可用的">
+<meta name="twitter:image" content="http://yoursite.com/2020/03/18/MQ-2/image-20200317091616481.png">
 
 
 
@@ -110,7 +119,7 @@
 
   
   
-  <link rel="canonical" href="http://yoursite.com/tags/设计模式/">
+  <link rel="canonical" href="http://yoursite.com/2020/03/18/MQ-2/">
 
 
 
@@ -120,7 +129,7 @@
   };
 </script>
 
-  <title>Tag: 设计模式 | lasbun's blog</title>
+  <title>聊聊消息队列(二) (如何保证消息队列高可用) | lasbun's blog</title>
   
 
 
@@ -168,7 +177,7 @@
     
   
 
-  <div class="container sidebar-position-left ">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -223,7 +232,7 @@
         
         
           
-          <li class="menu-item menu-item-tags menu-item-active">
+          <li class="menu-item menu-item-tags">
 
     
     
@@ -270,22 +279,6 @@
   
     
 
-    
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
-
   
 
   
@@ -331,295 +324,230 @@
           <div id="content" class="content">
             
 
+  <div id="posts" class="posts-expand">
+    
+
+  
+
   
   
   
-  <div class="post-block tag">
 
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>设计模式<small>Tag</small>
-        </h1>
-      </div>
-
-      
-        
+  
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/18/MQ-2/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="lasbun">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lasbun's blog">
+    </span>
+
+    
+      <header class="post-header">
+
         
-          <a class="post-title-link" href="/2019/12/03/架构/设计模式/享元模式/" itemprop="url">
-            
-              <span itemprop="name">设计模式之享元模式（flyweight）</span>
-            
-          </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">聊聊消息队列(二) (如何保证消息队列高可用)
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-12-03T20:20:24+08:00" content="2019-12-03">
-          12-03
-        </time>
-      </div>
+              
+            
+          </h1>
+        
 
-    </header>
-  </article>
+        <div class="post-meta">
+          <span class="post-time">
 
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2020-03-18 08:52:08 / Modified: 08:53:21" itemprop="dateCreated datePublished" datetime="2020-03-18T08:52:08+08:00">2020-03-18</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-          <a class="post-title-link" href="/2019/12/03/架构/设计模式/外观模式/" itemprop="url">
-            
-              <span itemprop="name">设计模式之外观模式</span>
-            
-          </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-12-03T20:20:24+08:00" content="2019-12-03">
-          12-03
-        </time>
-      </div>
-
-    </header>
-  </article>
-
+      
 
       
-        
+        <p>通过本篇，你可以了解到RabbitMQ以及Kafka是如何保证消息队列高可用的</p>
+<a id="more"></a>
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+<h4 id="如何保证消息队列高可用"><a href="#如何保证消息队列高可用" class="headerlink" title="如何保证消息队列高可用"></a>如何保证消息队列高可用</h4><ul>
+<li><a href="https://lasbun.github.io/2020/03/15/MQ-1/" target="_blank" rel="noopener">在上一篇</a> 我们聊到使用消息队列，会降低系统可用性(简单来讲，MQ挂掉了怎么办)</li>
+<li>不同的MQ对于高可用有不同的措施，面试问，也是回答自己用到哪些MQ，分别介绍相应的高可用措施是什么。</li>
+</ul>
+<h5 id="RabbitMQ"><a href="#RabbitMQ" class="headerlink" title="RabbitMQ"></a>RabbitMQ</h5><ul>
+<li>RabbitMQ 是基于主从（非分布式）做高可用的</li>
+<li>RabbitMQ分为三种模式。</li>
+</ul>
+<h6 id="单机模式-无高可用性"><a href="#单机模式-无高可用性" class="headerlink" title="单机模式(无高可用性)"></a>单机模式(无高可用性)</h6><ul>
+<li>基本就是自己玩玩</li>
+</ul>
+<h6 id="普通集群模式-无高可用性"><a href="#普通集群模式-无高可用性" class="headerlink" title="普通集群模式(无高可用性)"></a>普通集群模式(无高可用性)</h6><ul>
+<li>普通集群模式就是启动多个RabbitMQ实例，这个MQ之间互相同步meta信息(可以理解为queue的一些配置信息,通过meta信息，可以找到queue所在的实例)。消费的时候，如果queue所在的实例与连接的实例不是一个，连接的实例将会从实际queue所在实例，拉取数据。</li>
+<li><img src="/2020/03/18/MQ-2/image-20200317091616481.png"></li>
+<li>很明显的这种方式有几个弊端<ul>
+<li>随机选择一个实例，会有拉取数据的开销</li>
+<li>如果固定选择一个实例，会有单例性能瓶颈</li>
+<li>如果存放数据的实例宕机了，会导致其他无法获取到数据。当然也可以开启消息持久化，<strong>理论上数据不会丢</strong>，但是其他实例还是要等恢复了之后才可以拿到数据.</li>
+</ul>
+</li>
+<li>所以这个普通模式其实提高吞吐量，多个节点集中读取某个queue的数据.</li>
+</ul>
+<h6 id="镜像集群模式-高可用性"><a href="#镜像集群模式-高可用性" class="headerlink" title="镜像集群模式(高可用性)"></a>镜像集群模式(高可用性)</h6><ul>
+<li>镜像集群模式，简单说，就是queue的数据不是像普通集群模式，实际上只有一个queue保存数据。而且部分实例上有queue的备份。这样即使某个实例宕机掉了，服务也还是正常的。</li>
+<li>弊端<ul>
+<li>每个queue都会备份到部分实例，如果实例很大，那么磁盘，性能（备份数据，带宽和内存都负载很重）。</li>
+<li>这种不是分布式的，不存在扩展。例如某个queue的数据很多，新增机器其实也是需要备份所有的数据，根本解决不了负载的问题。</li>
+</ul>
+</li>
+<li><img src="/2020/03/18/MQ-2/image-20200317135018589.png">
 
-      <h2 class="post-title">
-        
-          <a class="post-title-link" href="/2019/12/03/架构/设计模式/命令模式/" itemprop="url">
-            
-              <span itemprop="name">设计模式之命令模式(command)</span>
-            
-          </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-12-03T20:20:24+08:00" content="2019-12-03">
-          12-03
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-          <a class="post-title-link" href="/2019/12/03/架构/设计模式/单例模式/" itemprop="url">
-            
-              <span itemprop="name">设计模式之单例模式</span>
-            
-          </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-12-03T20:20:24+08:00" content="2019-12-03">
-          12-03
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-          <a class="post-title-link" href="/2019/12/03/架构/设计模式/装饰模式/" itemprop="url">
-            
-              <span itemprop="name">设计模式之装饰模式</span>
-            
-          </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-12-03T20:20:24+08:00" content="2019-12-03">
-          12-03
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-          <a class="post-title-link" href="/2019/12/03/架构/设计模式/观察者模式/" itemprop="url">
-            
-              <span itemprop="name">设计模式之观察者模式</span>
-            
-          </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-12-03T20:20:24+08:00" content="2019-12-03">
-          12-03
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-          <a class="post-title-link" href="/2019/12/03/架构/设计模式/桥接模式/" itemprop="url">
-            
-              <span itemprop="name">设计模式之桥接模式</span>
-            
-          </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-12-03T20:20:24+08:00" content="2019-12-03">
-          12-03
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-          <a class="post-title-link" href="/2019/12/03/架构/设计模式/工厂模式汇总/" itemprop="url">
-            
-              <span itemprop="name">设计模式之工厂模式汇总</span>
-            
-          </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-12-03T20:20:24+08:00" content="2019-12-03">
-          12-03
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-          <a class="post-title-link" href="/2019/12/03/架构/设计模式/建造者模式/" itemprop="url">
-            
-              <span itemprop="name">设计模式之建造者模式</span>
-            
-          </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-12-03T20:20:24+08:00" content="2019-12-03">
-          12-03
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-          <a class="post-title-link" href="/2019/12/03/架构/设计模式/代理模式/" itemprop="url">
-            
-              <span itemprop="name">设计模式之代理模式</span>
-            
-          </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-12-03T20:20:24+08:00" content="2019-12-03">
-          12-03
-        </time>
-      </div>
-
-    </header>
-  </article>
-
+</li>
+</ul>
+<h5 id="Kafka"><a href="#Kafka" class="headerlink" title="Kafka"></a>Kafka</h5><ul>
+<li><p>kafka是基于副本机制来做高可用的</p>
+</li>
+<li><p>kafka基本架构</p>
+<ul>
+<li>由多个broker组成(节点)</li>
+<li>topic是由多个partition组成的</li>
+<li>每个partition可以放在不同的broker上，每个partition只存储部分数据</li>
+<li>每个partition 在其他节点上会有自己的副本。相同partition会选举出一个leader节点，所有的数据都会通过leader读写<ul>
+<li><img src="/2020/03/18/MQ-2/image-20200318083451830.png"></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>所以kafka的高可用机制是: 不同的partition有不同的备份，如果某一台机器宕机了，没关系，还有备份，如果这个机器上的partition是leader，那么剩余的partition重新选举出新leader，由新leader进行数据更新.</p>
+</li>
+<li><p>kafka与RabbitMQ还有一点就是，kafka的数据是真正的分布式，即部分数据在其他节点上。RabbitMQ镜像模式其实还是所有数据都是在一个节点上，其他节点都是所有数据的备份。</p>
+</li>
+<li><p>kafka详细剖析，待有时间补坑</p>
+</li>
+</ul>
 
       
     </div>
 
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/mq/" rel="tag"># mq</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/03/15/MQ-1/" rel="next" title="聊聊消息队列(一)">
+                <i class="fa fa-chevron-left"></i> 聊聊消息队列(一)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
-
-  
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/tags/设计模式/page/2/">2</a><a class="extend next" rel="next" href="/tags/设计模式/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
-  </nav>
+  </article>
 
 
+  </div>
 
 
           </div>
           
+
+  
+
+
 
         </div>
         
@@ -639,8 +567,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <div class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -777,6 +714,23 @@
       </div>
 
       
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#如何保证消息队列高可用"><span class="nav-number">1.</span> <span class="nav-text">如何保证消息队列高可用</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#RabbitMQ"><span class="nav-number">1.1.</span> <span class="nav-text">RabbitMQ</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#单机模式-无高可用性"><span class="nav-number">1.1.1.</span> <span class="nav-text">单机模式(无高可用性)</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#普通集群模式-无高可用性"><span class="nav-number">1.1.2.</span> <span class="nav-text">普通集群模式(无高可用性)</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#镜像集群模式-高可用性"><span class="nav-number">1.1.3.</span> <span class="nav-text">镜像集群模式(高可用性)</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Kafka"><span class="nav-number">1.2.</span> <span class="nav-text">Kafka</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
 
       
 
@@ -905,6 +859,10 @@
 
 
   
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
 
   
 
@@ -920,6 +878,8 @@
 
   
 
+
+  
 
 
   

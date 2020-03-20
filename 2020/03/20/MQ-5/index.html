@@ -96,13 +96,21 @@
 
 
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="lasbun&#39;s blog">
-<meta property="og:url" content="http://yoursite.com/tags/自旋锁/index.html">
+  <meta name="description" content="某些场景对于消息的顺序消费还是需要保证的（比如扣款查询，先验证权限，然后再扣款）。还有当消费的速度跟不上堆积的速度，就会造成消息堆积。本篇针对上面两个问题场景简单聊一下。">
+<meta name="keywords" content="mq">
+<meta property="og:type" content="article">
+<meta property="og:title" content="聊聊消息队列(五)[消息顺序消费&amp;&amp;消息堆积]">
+<meta property="og:url" content="http://yoursite.com/2020/03/20/MQ-5/index.html">
 <meta property="og:site_name" content="lasbun&#39;s blog">
+<meta property="og:description" content="某些场景对于消息的顺序消费还是需要保证的（比如扣款查询，先验证权限，然后再扣款）。还有当消费的速度跟不上堆积的速度，就会造成消息堆积。本篇针对上面两个问题场景简单聊一下。">
 <meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/2020/03/20/MQ-5/image-20200320091118658.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/20/MQ-5/MQ-5/image-20200320091118658.png">
+<meta property="og:updated_time" content="2020-03-20T01:12:12.115Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="lasbun&#39;s blog">
+<meta name="twitter:title" content="聊聊消息队列(五)[消息顺序消费&amp;&amp;消息堆积]">
+<meta name="twitter:description" content="某些场景对于消息的顺序消费还是需要保证的（比如扣款查询，先验证权限，然后再扣款）。还有当消费的速度跟不上堆积的速度，就会造成消息堆积。本篇针对上面两个问题场景简单聊一下。">
+<meta name="twitter:image" content="http://yoursite.com/2020/03/20/MQ-5/image-20200320091118658.png">
 
 
 
@@ -110,7 +118,7 @@
 
   
   
-  <link rel="canonical" href="http://yoursite.com/tags/自旋锁/">
+  <link rel="canonical" href="http://yoursite.com/2020/03/20/MQ-5/">
 
 
 
@@ -120,7 +128,7 @@
   };
 </script>
 
-  <title>Tag: 自旋锁 | lasbun's blog</title>
+  <title>聊聊消息队列(五)[消息顺序消费&&消息堆积] | lasbun's blog</title>
   
 
 
@@ -168,7 +176,7 @@
     
   
 
-  <div class="container sidebar-position-left ">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -223,7 +231,7 @@
         
         
           
-          <li class="menu-item menu-item-tags menu-item-active">
+          <li class="menu-item menu-item-tags">
 
     
     
@@ -270,22 +278,6 @@
   
     
 
-    
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
-
   
 
   
@@ -331,57 +323,197 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block tag">
+  <div id="posts" class="posts-expand">
+    
 
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>自旋锁<small>Tag</small>
-        </h1>
-      </div>
+  
 
-      
-        
+  
+  
+  
+
+  
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/20/MQ-5/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="lasbun">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lasbun's blog">
+    </span>
+
+    
+      <header class="post-header">
+
         
-          <a class="post-title-link" href="/2020/01/16/java/JAVA-SPIN/" itemprop="url">
-            
-              <span itemprop="name">java自旋锁</span>
-            
-          </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">聊聊消息队列(五)[消息顺序消费&&消息堆积]
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2020-01-16T16:19:02+08:00" content="2020-01-16">
-          01-16
-        </time>
-      </div>
+              
+            
+          </h1>
+        
 
-    </header>
-  </article>
+        <div class="post-meta">
+          <span class="post-time">
 
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2020-03-20 09:12:12" itemprop="dateCreated datePublished" datetime="2020-03-20T09:12:12+08:00">2020-03-20</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>某些场景对于消息的顺序消费还是需要保证的（比如扣款查询，先验证权限，然后再扣款）。还有当消费的速度跟不上堆积的速度，就会造成消息堆积。本篇针对上面两个问题场景简单聊一下。</p>
+<a id="more"></a>
+
+<p>####消息顺序消费</p>
+<ul>
+<li>消息顺序消费其实是业务常见的场景。从生产者生产消息没有按照顺序生产，到消费者没有按照顺序消费，都是会对业务有影响。但是本质上还是消费者拿到消息之后能够保证消费是按照顺序来消费。<h5 id="如何解决"><a href="#如何解决" class="headerlink" title="如何解决"></a>如何解决</h5></li>
+<li>我们先从本质上来看这个问题：消息顺序消费，其实就是在前置消息没有完成，后面的消息就不能够被消费。基本上就是同步的任务执行顺序。</li>
+<li>我们要解决上面的本质问题有下面几种方案：<ul>
+<li>把相关的消息做成一个原子消息，任意一个消费者拿到消息都是可以保证按照顺序执行的。<ul>
+<li>但是这个方案有个限制，需要将相关的消息封装成一个原子消息。有可能消息是不同的服务生产的，所以就无法在生产者将消息直接封装成一个原子消息。这种情况也是可以解决的，在消费者中间增加一个消息拼装的服务，用来专门做消息封装的工作，然后再讲相关的消息发送给消费者。</li>
+</ul>
+</li>
+<li>有些消息可能不能合并成一个原子消息(比如消息太多，无法合并等)，这个时候，我们可以针对这一类型消费指定一个key,每个key我们放置到一个内存queue里面，每个queue单独一个thread,来消费消息即可。</li>
+</ul>
+</li>
+</ul>
+<h4 id="消息堆积"><a href="#消息堆积" class="headerlink" title="消息堆积"></a>消息堆积</h4><ul>
+<li>产生消息堆积的场景有很多，但本质还是消费跟不上生产的频率。</li>
+<li>一般不会发生，一旦发生就是大问题！！！(都是泪)</li>
+<li>实际生产上的一个问题：因为刚开始写消费的时候，没有考虑到并发消费的问题。所以实际消费是1个服务1个消费线程再跑。等待发现问题的时候，线上已经堆积了接近100w的消息了。<h5 id="如何解决-1"><a href="#如何解决-1" class="headerlink" title="如何解决"></a>如何解决</h5>解决的思路；先修复消费者的问题—&gt;堆积消息迁移-&gt;消费迁移之后的堆积消息-&gt;恢复原有架构<img src="/2020/03/20/MQ-5/image-20200320091118658.png">
+<img src="MQ-5/image-20200320091118658.png" alt="image-20200320091118658"></li>
+<li>先修复消费者单线程消费–&gt;改成多线程。</li>
+<li>消息迁移，先将堆积的消息消费掉，扔到其他的队列里面(不影响后续的生产环境的消息)</li>
+<li>扩容10倍的机器，对迁移之后的数据进行消费。</li>
+<li>等待所有消费都完成之后，再把扩容的机器，重新下掉。</li>
+</ul>
+<h4 id="参考大佬"><a href="#参考大佬" class="headerlink" title="参考大佬"></a>参考大佬</h4><p><a href="https://doocs.github.io/advanced-java/#/./docs/high-concurrency/how-to-ensure-the-order-of-messages" target="_blank" rel="noopener">如何保证消息的顺序性？</a></p>
+<p><a href="https://doocs.github.io/advanced-java/#/./docs/high-concurrency/mq-time-delay-and-expired-failure" target="_blank" rel="noopener">如何解决消息队列的延时以及过期失效问题？消息队列满了以后该怎么处理？有几百万消息持续积压几小时，说说怎么解决？</a></p>
 
       
     </div>
 
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/mq/" rel="tag"># mq</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/03/19/MQ-4/" rel="next" title="聊聊消息队列(四) (数据丢失怎么玩)">
+                <i class="fa fa-chevron-left"></i> 聊聊消息队列(四) (数据丢失怎么玩)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+  </div>
 
 
           </div>
           
+
+  
+
+
 
         </div>
         
@@ -401,8 +533,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <div class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -539,6 +680,23 @@
       </div>
 
       
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#如何解决"><span class="nav-number">1.</span> <span class="nav-text">如何解决</span></a></li></ol><li class="nav-item nav-level-4"><a class="nav-link" href="#消息堆积"><span class="nav-number"></span> <span class="nav-text">消息堆积</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#如何解决-1"><span class="nav-number">1.</span> <span class="nav-text">如何解决</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考大佬"><span class="nav-number"></span> <span class="nav-text">参考大佬</span></a></li></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
 
       
 
@@ -667,6 +825,10 @@
 
 
   
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
 
   
 
@@ -682,6 +844,8 @@
 
   
 
+
+  
 
 
   

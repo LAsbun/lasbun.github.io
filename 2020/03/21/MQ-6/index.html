@@ -96,18 +96,18 @@
 
 
 
-  <meta name="description" content="java微服务 的一些对比">
-<meta name="keywords" content="java,微服务">
+  <meta name="description" content="上面几篇都是聊消息中间件遇到的问题以及相关的解决方案。那如果需要你来设计一个消息系统该怎么设计呢。">
+<meta name="keywords" content="mq">
 <meta property="og:type" content="article">
-<meta property="og:title" content="java微服务">
-<meta property="og:url" content="http://yoursite.com/2019/12/03/微服务/java微服务/index.html">
+<meta property="og:title" content="聊聊消息队列（六）(自己设计一个消息系统怎么玩)">
+<meta property="og:url" content="http://yoursite.com/2020/03/21/MQ-6/index.html">
 <meta property="og:site_name" content="lasbun&#39;s blog">
-<meta property="og:description" content="java微服务 的一些对比">
+<meta property="og:description" content="上面几篇都是聊消息中间件遇到的问题以及相关的解决方案。那如果需要你来设计一个消息系统该怎么设计呢。">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-12-03T12:20:23.844Z">
+<meta property="og:updated_time" content="2020-03-21T06:13:22.258Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="java微服务">
-<meta name="twitter:description" content="java微服务 的一些对比">
+<meta name="twitter:title" content="聊聊消息队列（六）(自己设计一个消息系统怎么玩)">
+<meta name="twitter:description" content="上面几篇都是聊消息中间件遇到的问题以及相关的解决方案。那如果需要你来设计一个消息系统该怎么设计呢。">
 
 
 
@@ -115,7 +115,7 @@
 
   
   
-  <link rel="canonical" href="http://yoursite.com/2019/12/03/微服务/java微服务/">
+  <link rel="canonical" href="http://yoursite.com/2020/03/21/MQ-6/">
 
 
 
@@ -125,7 +125,7 @@
   };
 </script>
 
-  <title>java微服务 | lasbun's blog</title>
+  <title>聊聊消息队列（六）(自己设计一个消息系统怎么玩) | lasbun's blog</title>
   
 
 
@@ -336,7 +336,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/03/微服务/java微服务/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/21/MQ-6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="lasbun">
@@ -353,7 +353,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">java微服务
+          <h1 class="post-title" itemprop="name headline">聊聊消息队列（六）(自己设计一个消息系统怎么玩)
 
               
             
@@ -379,7 +379,7 @@
                 
               
 
-              <time title="Created: 2019-12-03 20:20:23" itemprop="dateCreated datePublished" datetime="2019-12-03T20:20:23+08:00">2019-12-03</time>
+              <time title="Created: 2020-03-21 14:13:22" itemprop="dateCreated datePublished" datetime="2020-03-21T14:13:22+08:00">2020-03-21</time>
             
 
             
@@ -414,132 +414,42 @@
       
 
       
-        <p>java微服务 的一些对比</p>
+        <p>上面几篇都是聊消息中间件遇到的问题以及相关的解决方案。那如果需要你来设计一个消息系统该怎么设计呢。</p>
 <a id="more"></a>
 
-<p>java微服务</p>
-<hr>
-<ul>
-<li><p>微服务</p>
-<ul>
-<li>概念<ul>
-<li>一种架构模式，提倡将单一应用划分为一组小的服务，服务之间相互协调，相互配合</li>
+<h4 id="回顾梳理"><a href="#回顾梳理" class="headerlink" title="回顾梳理"></a>回顾梳理</h4><ul>
+<li>先回想下我们<a href="https://lasbun.github.io/2020/03/15/MQ-1/" target="_blank" rel="noopener">第一篇文章</a> ，消息队列主要有三个功能<strong>解耦</strong>，<strong>异步</strong>，<strong>削峰</strong>，并且有<strong>提高系统复杂性</strong>，<strong>降低系统可用性</strong>等弊端。</li>
+<li>以及我们后面几篇提到的问题：<ul>
+<li>高可用</li>
+<li>重复消费如何解决(幂等)</li>
+<li>消息丢失如何解决（可靠性）</li>
+<li>保证消息消费的顺序型</li>
+<li>消息失效或者是延时如何解决</li>
+<li>消息堆积如何解决</li>
+<li>一般自己搭建消息队列都需要那些模块<h4 id="见招拆招"><a href="#见招拆招" class="headerlink" title="见招拆招"></a>见招拆招</h4></li>
 </ul>
 </li>
-<li>特点<ul>
-<li>独立部署 不需要因单一服务重新部署全部服务</li>
-<li>技术选型灵活 去中心化</li>
-<li>容错 会隔离到单独的服务</li>
-<li>扩展 每个小服务都可以增加额外的扩展</li>
-<li>复杂度可控 每个微服务功能可以单一</li>
+<li>其中与消息中间件相关的有下面几个点：<ul>
+<li>高可用，可扩展。<ul>
+<li>不能说我用着用着就挂了。或者是我某个机器挂了，整个queue数据都丢了</li>
+<li>解决方案:可以参考kafka的高可用架构。数据分partition存储，partition自有备份。多个副本之件选举出leader于follower.一旦leader挂掉，就可以有其他的follower升级为leader.</li>
 </ul>
 </li>
+<li>支持可伸缩<ul>
+<li>我要异步其实就是为了提高并发，提高吞吐量。加机器增加我吞吐量总得支持。</li>
+<li>解决方案：参考kafka。如果吞吐量不够。先增加机器-&gt;topic增加partition-&gt;做数据迁移.就可以存放更多的数据，提高并发量了。</li>
 </ul>
 </li>
-<li><p>在分布式环境下，REST方式的服务依赖要比RPC方式的依赖更为灵活</p>
-</li>
-<li><p>Dubbo</p>
-<ul>
-<li>弊端<ul>
-<li>调用方与提供方依赖性太强</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>Spring-boot.</p>
-<ul>
-<li>弊端<ul>
-<li>rest比rpc 更轻，不存在各种强依赖。但是要统一管理好文档</li>
-<li>可以通过整合swagger 使每个服务代码与文档一体化，解决上面的问题</li>
+<li>持久化<ul>
+<li>我机器有可能会挂，那么如果都放在内存里面，一旦某个机器挂掉，部分数据还是有丢失的可能性。</li>
+<li>解决方案：就做数据持久化，按照消息的顺序写磁盘。这样下次读取数据的时候，不会因为消息地址散乱导致加载缓慢。</li>
 </ul>
 </li>
 </ul>
 </li>
+<li>还有其他的问题：具体可以看下我们之前梳理的那么多问题。见招拆招即可。</li>
 </ul>
-<table>
-<thead>
-<tr>
-<th>比较</th>
-<th>Dubbo</th>
-<th>Spring-boot</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>交互方式</td>
-<td>定义DTO</td>
-<td>json</td>
-</tr>
-<tr>
-<td>调用方式</td>
-<td>rpc</td>
-<td>http</td>
-</tr>
-<tr>
-<td>代码入侵</td>
-<td>配置xml,无代码入侵</td>
-<td>注解配置有代码入侵</td>
-</tr>
-<tr>
-<td>依赖情况</td>
-<td>调用方与提供方强依赖</td>
-<td>无依赖，可跨平台</td>
-</tr>
-<tr>
-<td>版本管理</td>
-<td>要有完善的版本管理</td>
-<td>省略了版本管理的问题，但是具体字段约定要统一管理</td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>服务注册中心</td>
-<td>Zookeeper redis</td>
-<td>Netflix Eureka</td>
-</tr>
-<tr>
-<td>服务网关</td>
-<td>无</td>
-<td>Netflix Zuul</td>
-</tr>
-<tr>
-<td>断路（熔断器）</td>
-<td>暂不完善</td>
-<td>Netflix Hystrix</td>
-</tr>
-<tr>
-<td>配置中心</td>
-<td>无</td>
-<td>Spring-cloud config</td>
-</tr>
-<tr>
-<td>调用链追踪</td>
-<td>无</td>
-<td>Spring Cloud Sleuth</td>
-</tr>
-<tr>
-<td>消息总线</td>
-<td>无</td>
-<td>spring-cloud</td>
-</tr>
-<tr>
-<td>数据流</td>
-<td>无</td>
-<td>Spring Cloud Stream 封装了与Redis,Rabbit、Kafka等发送接收消息</td>
-</tr>
-<tr>
-<td>批量任务</td>
-<td>无</td>
-<td>Spring Cloud Task</td>
-</tr>
-</tbody></table>
-<ul>
-<li>Dubbo只是实现了服务治理</li>
-<li>SpringCloud子项目分别覆盖了微服务架构体系下的方方面面，服务治理只是其中的一个方面</li>
-<li>Dubbo额外提供了Filter扩展，对于上述“暂无”的部分，都可以通过扩展Filter来完善</li>
-</ul>
+<h4 id="参考大佬"><a href="#参考大佬" class="headerlink" title="参考大佬"></a>参考大佬</h4><p><a href="https://doocs.github.io/advanced-java/#/./docs/high-concurrency/mq-design" target="_blank" rel="noopener">如果让你写一个消息队列，该如何进行架构设计啊？说一下你的思路。</a></p>
 
       
     </div>
@@ -563,9 +473,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/java/" rel="tag"># java</a>
-          
-            <a href="/tags/微服务/" rel="tag"># 微服务</a>
+            <a href="/tags/mq/" rel="tag"># mq</a>
           
         </div>
       
@@ -578,8 +486,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/12/03/微服务/前后端分离是什么/" rel="next" title="微服务之前后端分离">
-                <i class="fa fa-chevron-left"></i> 微服务之前后端分离
+              <a href="/2020/03/20/MQ-5/" rel="next" title="聊聊消息队列(五)[消息顺序消费&&消息堆积]">
+                <i class="fa fa-chevron-left"></i> 聊聊消息队列(五)[消息顺序消费&&消息堆积]
               </a>
             
           </div>
@@ -587,10 +495,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/12/03/架构/设计模式/基本原则/里氏替换原则/" rel="prev" title="设计模式之里氏替换原则(Liskov Substitution Principle，LSP)">
-                设计模式之里氏替换原则(Liskov Substitution Principle，LSP) <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -634,8 +538,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <div class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -771,6 +684,23 @@
         </div>
       </div>
 
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#回顾梳理"><span class="nav-number">1.</span> <span class="nav-text">回顾梳理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#见招拆招"><span class="nav-number">2.</span> <span class="nav-text">见招拆招</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考大佬"><span class="nav-number">3.</span> <span class="nav-text">参考大佬</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
       
 
       

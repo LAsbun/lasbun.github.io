@@ -110,7 +110,7 @@
 <meta property="og:image" content="http://yoursite.com/2020/03/19/MQ-4/MQ-4/image-20200319090810117.png">
 <meta property="og:image" content="http://yoursite.com/2020/03/19/MQ-4/image-20200319203824004.png">
 <meta property="og:image" content="http://yoursite.com/2020/03/19/MQ-4/MQ-4/image-20200319203824004.png">
-<meta property="og:updated_time" content="2020-03-20T01:18:25.653Z">
+<meta property="og:updated_time" content="2020-03-20T11:11:35.298Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="聊聊消息队列(四) (数据丢失怎么玩)">
 <meta name="twitter:description" content="本篇文章梳理了数据丢失的源头，以及关于如何避免的一些思考">
@@ -403,7 +403,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2020-03-20 09:18:25" itemprop="dateModified" datetime="2020-03-20T09:18:25+08:00">2020-03-20</time>
+                <time title="Modified: 2020-03-20 19:11:35" itemprop="dateModified" datetime="2020-03-20T19:11:35+08:00">2020-03-20</time>
               
             
           </span>
@@ -412,6 +412,19 @@
 
           
             
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">Comments: </span>
+                <a href="/2020/03/19/MQ-4/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/03/19/MQ-4/" itemprop="commentCount"></span>
+                </a>
+              </span>
             
           
 
@@ -564,6 +577,10 @@
 
           </div>
           
+
+  
+    <div class="comments" id="comments">
+    </div>
 
   
 
@@ -897,6 +914,36 @@
   
 
   
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: 'k8LjQ31FboI6pVPOMEyQsz7I-gzGzoHsz',
+    appKey: 'hcWObFEMn7Rc7cEdzXOIchbQ',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false,
+    lang: '' || 'zh-cn'
+  });
+</script>
+
+
 
 
   

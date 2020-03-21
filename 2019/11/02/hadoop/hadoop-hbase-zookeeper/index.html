@@ -406,19 +406,6 @@
           
             
             
-              
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">Comments: </span>
-                <a href="/2019/11/02/hadoop/hadoop-hbase-zookeeper/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/11/02/hadoop/hadoop-hbase-zookeeper/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
           
 
           
@@ -489,7 +476,7 @@
 </ul>
 <ul>
 <li><p>开启免密登录</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 在三台机器上分别执行</span></span><br><span class="line">ssh-copy-id 10.211.55.20</span><br><span class="line">ssh-copy-id 10.211.55.21</span><br><span class="line">ssh-copy-id 10.211.55.22</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 在三台机器上分别执行</span><br><span class="line">ssh-copy-id 10.211.55.20</span><br><span class="line">ssh-copy-id 10.211.55.21</span><br><span class="line">ssh-copy-id 10.211.55.22</span><br></pre></td></tr></table></figure>
 
 
 
@@ -770,10 +757,6 @@
 
           </div>
           
-
-  
-    <div class="comments" id="comments">
-    </div>
 
   
 
@@ -1107,36 +1090,6 @@
   
 
   
-  
-
-<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
-
-
-
-<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
-
-<script>
-  var GUEST = ['nick', 'mail', 'link'];
-  var guest = 'nick,mail,link';
-  guest = guest.split(',').filter(function(item) {
-    return GUEST.indexOf(item) > -1;
-  });
-  new Valine({
-    el: '#comments',
-    verify: false,
-    notify: false,
-    appId: 'k8LjQ31FboI6pVPOMEyQsz7I-gzGzoHsz',
-    appKey: 'hcWObFEMn7Rc7cEdzXOIchbQ',
-    placeholder: 'Just go go',
-    avatar: 'mm',
-    meta: guest,
-    pageSize: '10' || 10,
-    visitor: false,
-    lang: '' || 'zh-cn'
-  });
-</script>
-
-
 
 
   

@@ -96,21 +96,21 @@
 
 
 
-  <meta name="description" content="高并发是工程师老生常谈的事情。高并发简单来讲就是是服务器端，能够及时响应每秒成千上万次的请求，并且没有任何异常。博主根据自身的工作经历，在接下来的几篇文章中，从攻(爬虫)以及守(服务端开发)两个方面来聊聊高并发。本篇是主要聊攻">
+  <meta name="description" content="高并发是工程师老生常谈的事情。高并发简单来讲就是是服务器端，能够及时响应每秒成千上万次的请求，并且没有任何异常。博主根据自身的工作经历，在接下来的几篇文章中，从矛(爬虫)以及盾(服务端开发)两个方面来聊聊高并发。本篇是主要聊矛">
 <meta name="keywords" content="高并发">
 <meta property="og:type" content="article">
-<meta property="og:title" content="聊聊高并发之攻（设计一个高并发爬虫系统）">
+<meta property="og:title" content="聊聊高并发之矛（设计一个高并发爬虫系统）">
 <meta property="og:url" content="http://yoursite.com/2020/03/23/HCD-1/index.html">
 <meta property="og:site_name" content="lasbun&#39;s blog">
-<meta property="og:description" content="高并发是工程师老生常谈的事情。高并发简单来讲就是是服务器端，能够及时响应每秒成千上万次的请求，并且没有任何异常。博主根据自身的工作经历，在接下来的几篇文章中，从攻(爬虫)以及守(服务端开发)两个方面来聊聊高并发。本篇是主要聊攻">
+<meta property="og:description" content="高并发是工程师老生常谈的事情。高并发简单来讲就是是服务器端，能够及时响应每秒成千上万次的请求，并且没有任何异常。博主根据自身的工作经历，在接下来的几篇文章中，从矛(爬虫)以及盾(服务端开发)两个方面来聊聊高并发。本篇是主要聊矛">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/2020/03/23/HCD-1/image-20200323211931346.png">
 <meta property="og:image" content="http://yoursite.com/2020/03/23/HCD-1/image-20200323213520629.png">
 <meta property="og:image" content="http://yoursite.com/2020/03/23/HCD-1/image-20200323214930785.png">
-<meta property="og:updated_time" content="2020-03-24T02:02:46.374Z">
+<meta property="og:updated_time" content="2020-03-24T12:25:07.271Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="聊聊高并发之攻（设计一个高并发爬虫系统）">
-<meta name="twitter:description" content="高并发是工程师老生常谈的事情。高并发简单来讲就是是服务器端，能够及时响应每秒成千上万次的请求，并且没有任何异常。博主根据自身的工作经历，在接下来的几篇文章中，从攻(爬虫)以及守(服务端开发)两个方面来聊聊高并发。本篇是主要聊攻">
+<meta name="twitter:title" content="聊聊高并发之矛（设计一个高并发爬虫系统）">
+<meta name="twitter:description" content="高并发是工程师老生常谈的事情。高并发简单来讲就是是服务器端，能够及时响应每秒成千上万次的请求，并且没有任何异常。博主根据自身的工作经历，在接下来的几篇文章中，从矛(爬虫)以及盾(服务端开发)两个方面来聊聊高并发。本篇是主要聊矛">
 <meta name="twitter:image" content="http://yoursite.com/2020/03/23/HCD-1/image-20200323211931346.png">
 
 
@@ -129,7 +129,7 @@
   };
 </script>
 
-  <title>聊聊高并发之攻（设计一个高并发爬虫系统） | lasbun's blog</title>
+  <title>聊聊高并发之矛（设计一个高并发爬虫系统） | lasbun's blog</title>
   
 
 
@@ -357,7 +357,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">聊聊高并发之攻（设计一个高并发爬虫系统）
+          <h1 class="post-title" itemprop="name headline">聊聊高并发之矛（设计一个高并发爬虫系统）
 
               
             
@@ -400,7 +400,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2020-03-24 10:02:46" itemprop="dateModified" datetime="2020-03-24T10:02:46+08:00">2020-03-24</time>
+                <time title="Modified: 2020-03-24 20:25:07" itemprop="dateModified" datetime="2020-03-24T20:25:07+08:00">2020-03-24</time>
               
             
           </span>
@@ -434,13 +434,13 @@
       
 
       
-        <p>高并发是工程师老生常谈的事情。高并发简单来讲就是是服务器端，能够及时响应每秒成千上万次的请求，并且没有任何异常。博主根据自身的工作经历，在接下来的几篇文章中，从攻(爬虫)以及守(服务端开发)两个方面来聊聊高并发。本篇是主要聊<code>攻</code></p>
+        <p>高并发是工程师老生常谈的事情。高并发简单来讲就是是服务器端，能够及时响应每秒成千上万次的请求，并且没有任何异常。博主根据自身的工作经历，在接下来的几篇文章中，从矛(爬虫)以及盾(服务端开发)两个方面来聊聊高并发。本篇是主要聊<code>矛</code></p>
 <a id="more"></a>
 
 <h4 id="先瞎聊几句"><a href="#先瞎聊几句" class="headerlink" title="先瞎聊几句"></a>先瞎聊几句</h4><ul>
 <li>关于爬虫(网络爬虫)相关的一些概念，请读者自行google。</li>
 <li>爬虫的主要功能：本质上还是数据采集。</li>
-<li><strong>本篇文章只是博主的个人见解，仅供参考。大家还是要做个守法的公民，违法后果自负</strong>。</li>
+<li><strong>本篇文章只是博主的个人见解，仅供参考。大家还是要做个盾法的公民，违法后果自负</strong>。</li>
 </ul>
 <h4 id="一些前提"><a href="#一些前提" class="headerlink" title="一些前提"></a>一些前提</h4><ul>
 <li>工具语言使用python（python中线程对于Io基本是单线程，所以考虑进程+协程）</li>
@@ -469,7 +469,7 @@
 <li>因为单个mysql的Qps就是2048. 如果并发量再多，mysql就直接炸掉，就算抓取到了数据，数据没有保存起来也是白搭。所以一般就是采用<strong>消息中间件</strong>，作为临时缓冲，然后搭建分布式存储集群(分库分表)，以保证能够及时存储。</li>
 </ul>
 <h4 id="来个小总结"><a href="#来个小总结" class="headerlink" title="来个小总结"></a>来个小总结</h4><ul>
-<li>看了上面的，这不就是同时请求的并发数目，加机器其实也算提高并发数。对，高并发对于攻(爬虫)来讲其实就是，疯狂的加并发。</li>
+<li>看了上面的，这不就是同时请求的并发数目，加机器其实也算提高并发数。对，高并发对于矛(爬虫)来讲其实就是，疯狂的加并发。</li>
 </ul>
 <h4 id="别慌，坑多着呢。-基本就是爬虫工程师常遇到的问题，等我有时间来填"><a href="#别慌，坑多着呢。-基本就是爬虫工程师常遇到的问题，等我有时间来填" class="headerlink" title="别慌，坑多着呢。(基本就是爬虫工程师常遇到的问题，等我有时间来填)"></a>别慌，坑多着呢。(基本就是爬虫工程师常遇到的问题，等我有时间来填)</h4><ul>
 <li>我们上面讲的是只是理想情况下。现实很残酷的。一个能够高并发分布式的爬虫系统，大概率是会遇到下面的问题：<ul>
@@ -490,7 +490,7 @@
 </li>
 </ul>
 <h4 id="最后的总结"><a href="#最后的总结" class="headerlink" title="最后的总结"></a>最后的总结</h4><ul>
-<li>对于攻方的高并发，最核心的其实还是在与服务端的响应瓶颈。所以如果做好一个高并发的守方才是难度最高的。</li>
+<li>对于矛方的高并发，最核心的其实还是在与服务端的响应瓶颈。所以如果做好一个高并发的盾方才是难度最高的。</li>
 </ul>
 
       
@@ -537,6 +537,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/03/24/HCD-2/" rel="prev" title="聊聊高并发之盾（设计一个高并发后端）">
+                聊聊高并发之盾（设计一个高并发后端） <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -605,7 +609,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">58</span>
+                    <span class="site-state-item-count">59</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>

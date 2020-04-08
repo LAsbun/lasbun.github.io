@@ -1,0 +1,36 @@
+---
+title: ==equals
+date: 2019-11-25 10:03:24
+tags: java 
+---
+
+通过本篇文章，你可以了解到 == 与equals的区别
+
+<!-- more -->
+
+== 比较的是 地址。 如果是基础类型就比较值。如果是对象就比较地址
+
+equals() : 它的作用也是判断两个对象是否相等。但它一般有两种使用情况：
+情况1：类没有覆盖 equals() 方法。则通过 equals() 比较该类的两个对象时，等价于通过“==”比较这两个对象。
+情况2：类覆盖了 equals() 方法。一般，我们都覆盖 equals() 方法来比较两个对象的内容是否相等；若它们的内容相等，则返回 true (即，认为这两个对象相等)。
+
+举个栗子
+```
+public class test1 {
+    public static void main(String[] args) {
+        String a = new String("ab"); // a 为一个引用
+        String b = new String("ab"); // b为另一个引用,对象的内容一样
+        String aa = "ab"; // 放在常量池中
+        String bb = "ab"; // 从常量池中查找
+        if (aa == bb) // true
+            System.out.println("aa==bb");
+        if (a == b) // false，非同一对象
+            System.out.println("a==b");
+        if (a.equals(b)) // true
+            System.out.println("aEQb");
+        if (42 == 42.0) { // true
+            System.out.println("true");
+        }
+    }
+}
+```

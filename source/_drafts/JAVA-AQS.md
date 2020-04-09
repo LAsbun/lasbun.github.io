@@ -252,7 +252,7 @@ tags:
 
         /** 等待状态： 由于同步队列中等待的线程等待超时或者被中断，需要从同步队列中取消等待，节点进入该状态将不会变化 */
         static final int CANCELLED =  1;
-        /** 等待状态：后续节点的线程处于等待状态。如果当前线程释放了同步状态或者被取消，将会通知后续节点线程运行 */
+        /** 等待状态：后续节点的线程处于等待状态。如果当前线程释放了同步状态或者被取消，将会通知后续节点线程运行。 所以signal 都是后继节点设置的*/
         static final int SIGNAL    = -1;
         /** 节点在等待队列中，等待某一个condition触发。当其他线程调用了condition的signal方法后，该节点将会从等待队列移动到同步队列中，加入到对同步状态的获取中 */
         static final int CONDITION = -2;
@@ -378,9 +378,67 @@ tags:
             }
         }
     }
+    
+    // 自旋查询是否可以获取到锁
+    final boolean acquireQueued(final Node node, int arg) {
+        boolean failed = true;
+        try {
+            boolean interrupted = false;
+            for (;;) {
+                final Node p = node.predecessor();
+                // 如果前驱几点是head,并且可以获取锁
+                if (p == head && tryAcquire(arg)) {
+                		// 将当前节点设置为head节点
+                    setHead(node);
+                    p.next = null; // help GC
+                    failed = false;
+                    return interrupted;
+                }
+                // 如果获取失败，要挂起，
+                if (shouldParkAfterFailedAcquire(p, node) &&
+                		// 挂起后检查是否被中断
+                    parkAndCheckInterrupt())
+                    interrupted = true;
+            }
+        } finally {
+            if (failed)
+            		// 获取失败了，就取消获取锁
+                cancelAcquire(node);
+        }
+    }
+    
+    // 这里用到了
+    private static boolean shouldParkAfterFailedAcquire(Node pred, Node node) {
+        int ws = pred.waitStatus;
+        if (ws == Node.SIGNAL)
+            /*
+             * 如果前驱节点是signal 那么释放的时候要唤醒后继节点。已经唤醒了，所以直接返回true 即可
+             */
+            return true;
+        if (ws > 0) {
+            /*
+             * >0 就是被取消了
+             * 那么就轮询当前节点的前驱节点，把前驱节点取消的节点都删除掉.
+             */
+            do {
+                node.prev = pred = pred.prev;
+            } while (pred.waitStatus > 0);
+            pred.next = node;
+        } else {
+            /*
+             * 前驱节点不是cancell 又不是signal 那就将前驱节点设置成signal 给自己一个闹钟。标识前驱节点OK了，就唤醒本节点
+             */
+            compareAndSetWaitStatus(pred, ws, Node.SIGNAL);
+        }
+        return false;
+    }
+    
 		```
 	- 释放
-		- release()函数 	
+		- release()函数 
+			- 由释放锁的子类实现
+		- unparkSuccessor(h)
+			- 唤醒后续进程
 		```
 		public final boolean release(int arg) {
         if (tryRelease(arg)) {
@@ -392,10 +450,37 @@ tags:
         }
         return false;
         }
+        
     ```
+  
+   private void unparkSuccessor(Node node) {
+        
+        // 这里如果是1 则是cancel
+        // 如果是小于0，但是该节点要被唤醒，所以就置为0
+        int ws = node.waitStatus;
+      if (ws < 0)
+            compareAndSetWaitStatus(node, ws, 0);
+      
+        // 唤醒下一个节点
+        Node s = node.next;
+        // 如果下一个节点是null 或者是下一个节点waitStatus>0(被取消)
+        if (s == null || s.waitStatus > 0) {
+            s = null;
+            // 则从tail 找到最近的没有被取消的节点
+            for (Node t = tail; t != null && t != node; t = t.prev)
+                if (t.waitStatus <= 0)
+                    s = t;
+        }
+        // 如果下一个节点不为null,即还在等待锁
+        if (s != null)
+        		// 唤醒下一个节点
+            LockSupport.unpark(s.thread);
+	  }
+	  ```
 	  
 	  ![image-20200118143710505](JAVA-AQS/image-20200118143710505.png)
 		
+	  ```
 #### 共享式同步状态获取与释放
 - 共享同步状态的获取与独占式同步状态的获取稍微有点不一样。**独占式释放锁之后才能触发后继节点获取锁**。 共享式同步状态可以被多个线程获取**所以共享式同步状态在获取和释放的时候，都会唤醒后继节点**。简单理解就是当某个线程可以获取到锁的时候，对于独占式就只能该线程释放后其他线程才能获取。共享式在某个线程获取的时候，其他线程有可能也可以获取到锁。
 - 如下图(读写锁只是举例)
@@ -408,7 +493,9 @@ tags:
 - ![image-20200408175749045](JAVA-AQS/image-20200408175749045.png)
 - {% asset_img image-20200408175749045.png %}
 
-- 源码
+- 获取
+	- 这里需要注意的是，**在轮询当前锁获取到的时候，需要通知其他等待获取锁的节点尝试获取锁**
+	- 直接代码
 	
 	```
 	// 获取
@@ -420,17 +507,22 @@ tags:
 	    if (tryAcquireShared(arg) < 0)
 	        doAcquireShared(arg);
 	}
-	 		// 如果当前节点的前驱节点是头部节点，并且tryAcquireShared(arg) >= 0，则表示获取到了同步状态，就进行推出
+	 		// 如果当前节点的前驱节点是头部节点，并且tryAcquireShared(arg) >= 0，则表示获取到了同步状态,设置当前节点为head,并且通知其他可以获取到锁的节点获取锁
 	 		private void doAcquireShared(int arg) {
+   		 // addWaiter(Node.SHARED)只是标记是共享式的
         final Node node = addWaiter(Node.SHARED);
         boolean failed = true;
         try {
             boolean interrupted = false;
             for (;;) {
+            		// 获取前置节点
                 final Node p = node.predecessor();
                 if (p == head) {
+                		// 如果前置节点是Head 
                     int r = tryAcquireShared(arg);
+                    //并且可以获取到锁
                     if (r >= 0) {
+                    		// 设置当前节点为head,通知其他节点获取锁
                         setHeadAndPropagate(node, r);
                         p.next = null; // help GC
                         if (interrupted)
@@ -448,10 +540,66 @@ tags:
                 cancelAcquire(node);
         }
     }
+    
+    // 这里是setHead 以及共享式是否通知其他等待获取锁的节点获取锁
+    private void setHeadAndPropagate(Node node, int propagate) {
+    		// 下面两行与独占式是一样的
+        Node h = head; // Record old head for check below
+        setHead(node);
+        // propagate > 0 代表后续的节点是可以获取
+        // h == null 则表示是初始节点
+        // h.waitStatus < 0 则表示是条件，表示后续节点需要唤醒
+        // (h = head) == null || h.waitStatus < 0 则是判断当前节点的head （注意这里因为后续的节点在成为head之后，也会release,所以这个(h=head)不一定刚开始的head）
+        if (propagate > 0 || h == null || h.waitStatus < 0 ||
+            (h = head) == null || h.waitStatus < 0) {
+            Node s = node.next;
+            // 如果符合上面的条件，当前节点的next是null(则表示当前节点的next节点也已经被释放了，或者下一个节点是共享节点)
+            if (s == null || s.isShared())
+            		// 这里在共享锁的释放中，来解读
+                doReleaseShared();
+        }
+    }
+    
+    
   ```
-  
-	
-
-  ```
-  
-  ```
+	- 释放
+	```
+	 public final boolean releaseShared(int arg) {
+        if (tryReleaseShared(arg)) {
+            doReleaseShared();
+            return true;
+        }
+        return false;
+    }
+    
+    // 通知可以获取到锁的其他节点。
+    // 只有当（h==head）时候才会终止. 标识所有可以获取到锁的节点都已经获取到锁了
+    private void doReleaseShared() {
+       
+        for (;;) {
+            Node h = head;
+            if (h != null && h != tail) {
+                int ws = h.waitStatus;
+                if (ws == Node.SIGNAL) {
+                		// 如果当前节点是signal, 因为已经可以获取到锁(doAcquire)或者是释放掉锁(release), 所以都可以将当前节点的status 设置成为0. 如果没有设置成功，跳过。
+                    if (!compareAndSetWaitStatus(h, Node.SIGNAL, 0))
+                        continue;            // loop to recheck cases
+                    // 如果设置成功，其实就是需要唤醒后继节点了
+                    unparkSuccessor(h);
+                }
+                // ws == 0 并且是至少两个节点，
+                // ws== 0 有下面几种分析:
+                // 1 多线程情况下，某个线程上面的compareAndSetWaitStatus(h, Node.SIGNAL, 0) 成功(注意这种情况是多个节点的head都是这个head). 这种情况不可能出现的。因为doReleaseShare的大前提是当前节点就是前置节点是可以获取到锁的。前置节点可以获取到锁，其实就是前驱节点已经是head.多个线程操作，不会同时获取到同一个head.
+                // 2 当头结点刚创建的时候，status为0.尾结点已经追加进来，需要执行shouldParkAfterFailedAcquire将head的waitStatus设置为signal.但是还没有执行，所以会有ws==0.
+                else if (ws == 0 &&
+                					// !compareAndSetWaitStatus(h, 0, Node.PROPAGATE)  当h的waitStatus不是0的时候，说明h.waitStatus被改了。说明之前的shouldParkAfterFailedAcquire已经执行了，所以需要continue.
+                					// 如果compareAndSetWaitStatus(h, 0, Node.PROPAGATE)成功了，对于上文的setHeadAndPropagate,中有```|| h == null || h.waitStatus < 0 || (h = head) == null || h.waitStatus < 0``` h.waitStatus < 0.
+            (h = head) == null || h.waitStatus < 0)
+                         !compareAndSetWaitStatus(h, 0, Node.PROPAGATE))
+                    continue;                // loop on failed CAS
+            }
+            if (h == head)                   // loop if head changed
+                break;
+        }
+    }
+	```

@@ -1,7 +1,9 @@
 ---
-title: java concurrent包
+title: 聊聊java并发编程 [JUC基本架构]
 date: 2020-01-06 23:55:43
-tags: java, 并发编程
+tags: 
+- java
+- concurrent
 ---
 
 通过本片文章，你可以了解到：

@@ -23,7 +23,7 @@ final finally finalize 区别
         - 注意：
           - 只有当执行的时候，并且没有发生 线程被kill,断电，退出虚拟机等情况(这些情况不会执行finally)，finally才会执行.
         - 特殊
-          - ```  
+          - ```  
             private int testFinallyString(String str) {
 
               try {

@@ -1,6 +1,7 @@
 ---
 title: java 基础学习之Java.util.function 简单使用
 tags: [java]
+date: 2019-12-08
 ---
 
 Java.util.function 简单使用

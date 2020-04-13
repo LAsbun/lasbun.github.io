@@ -2,6 +2,7 @@
 title: Flink之第一个Flink程序
 tags: Flink
 categories: Flink
+date: 2019-06-11
 ---
 
 通过本篇文章，帮助你通过使用Maven 快速实现官网demo.

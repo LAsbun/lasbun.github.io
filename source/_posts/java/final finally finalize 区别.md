@@ -1,6 +1,7 @@
 ---
 title: java 基础学习之final finally finalize 区别
 tags: [java]
+date: 2019-12-14
 ---
 
 final finally finalize 区别

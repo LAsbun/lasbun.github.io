@@ -1,6 +1,7 @@
 ---
 title: mysql高性能优化
 tags: [mysql]
+date: 2019-12-16
 ---
 
 mysql高性能优化的一些策略

@@ -1,6 +1,7 @@
 ---
 title: spring-data-jpa多源配置 隐式命名规则（驼峰转蛇形）失效 解决
 tags: [java,spring boot]
+date: 2019-11-27
 ---
 
 spring-data-jpa多源配置 隐式命名规则（驼峰转蛇形）失效 解决

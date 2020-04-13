@@ -1,6 +1,7 @@
 ---
 title: java 基础学习之JVM学习
 tags: [java]
+date: 2019-12-14
 ---
 
 JVM学习

@@ -35,7 +35,7 @@ int 与 Integer 区别
       System.out.println(a == b); // true
       System.out.println(a.equals(b));  // true
 
-      // ②如果是超过这个范围 那么结果就不一样了
+      // ②如果是超过这个范围 那么结果就不一样了
 
       Integer a = 599999999;
       Integer b = 599999999;
@@ -45,7 +45,7 @@ int 与 Integer 区别
       System.out.println(a.equals(b));  // true
 
       // 出现①和②是因为 
-       java在编译Integer a = 5 ;时，会翻译成为Integer a = Integer.valueOf(5)。而java API中对Integer类型的valueOf的定义如下，对于-128到127之间的数，会进行缓存，Integer a = 5 b = 5时，就会直接从缓存中取，就不会new了。
+       java在编译Integer a = 5 ;时，会翻译成为Integer a = Integer.valueOf(5)。而java API中对Integer类型的valueOf的定义如下，对于-128到127之间的数，会进行缓存，Integer a = 5 b = 5时，就会直接从缓存中取，就不会new了。
 
       见源码
           public static Integer valueOf(int i) {

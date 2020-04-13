@@ -13,7 +13,7 @@ final finally finalize 区别
         - 表示不允许继承
           - final类中所有的成员方法都会隐式的定义为final方法。
       - 修饰方法
-        - 表示子类不能重写此方法
+        - 表示子类不能重写此方法
           - 提高效率
           - 锁定方法
       - 修饰变量
@@ -21,7 +21,7 @@ final finally finalize 区别
     - finally(跟try...except连用)
       - 不关有没有异常都会执行。
         - 注意：
-          - 只有当执行的时候，并且没有发生 线程被kill,断电，退出虚拟机等情况(这些情况不会执行finally)，finally才会执行.
+          - 只有当执行的时候，并且没有发生 线程被kill,断电，退出虚拟机等情况(这些情况不会执行finally)，finally才会执行.
         - 特殊
           - ```  
             private int testFinallyString(String str) {

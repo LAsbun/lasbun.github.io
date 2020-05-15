@@ -54,7 +54,6 @@ public class ExecutorTest {
 	- 执行任务(ExecuteService)
 	- 任务结果(Future) 
 {% asset_img image-20200514213103252.png %}
-	![image-20200514213103252](JUC-8/image-20200514213103252.png)
 
 - 从上面的图我们可以观察到，核心还是ThreadPoolExecutor 以及其子类 ScheduledThreadPoolExecutor. 
 - 我们主要从ThreadPoolExecutor 执行流程剖析下

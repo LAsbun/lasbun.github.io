@@ -108,8 +108,8 @@ public class ExecutorTest {
 		- 如果所有任务都已经终止了，workCount(有效线程数)为0，线程池会调用terminated() 进入TERMINATED 状态  
 	- TERMINATED: 0b01100000_00000000_00000000_00000000
 		- 在terminated() 方法执行完后进入该状态，默认terminated()方法中什么也没有做
-
-
+- 下面是状态流转图
+	{% asset_img image-20200515142519394.png %}
 
 ##### ThreadPoolExecutor 构造方法
 - 主要的都是调用下面的构造方法

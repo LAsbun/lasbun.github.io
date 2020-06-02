@@ -1,7 +1,18 @@
 ---
-title: 聊聊Spring[Spring IOC 源码剖析]
-tags:[java, spring, ioc]
+title: '聊聊Spring[Spring IOC 源码剖析]'
+tags:
+  - java
+  - spring
+  - ioc
+date: 2020-06-02 09:44:24
 ---
+
+
+- 本篇文章从下面几点聊聊spring核心值IOC
+	- 什么是Spring IOC
+	- Spring IOC 能够帮助我们做什么事情
+	- 源码分析
+	- 总结
 
 <!-- more -->
 
@@ -18,7 +29,7 @@ tags:[java, spring, ioc]
 2. 是一种思想
 3. 控制：对象的创建以及管理
 4. 翻转：控制权交给其他的IOC容器
-5. 实际对比 ![image-20200521092115676](Spring-1/image-20200521092115676.png)
+5. 实际对比 {% asset_img image-20200521092115676.png %}
 
 ###### 举个例子
 - 场景
@@ -69,7 +80,6 @@ public ClassPathXmlApplicationContext(String[] configLocations, boolean refresh,
 	- 生成非lazy-init 的singletonsInstance. 
 - 运行图
 	- {% asset_img image-20200529084655527.png %} 	
-  - ![image-20200529084655527](Spring-1/image-20200529084655527.png)
 - 源码
 ```
 @Override
@@ -149,7 +159,6 @@ public ClassPathXmlApplicationContext(String[] configLocations, boolean refresh,
 - 注意：
 	1. 并没有实例化 
 - {% asset_img image-20200528093521309.png %}
-- ![image-20200528093521309](Spring-1/image-20200528093521309.png)
 ```
 protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
 		// 核心逻辑在这里，刷新了会放在内置的属性beanFactory里面
@@ -192,7 +201,7 @@ protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
 ###### DefaultListableBeanFactory
 1. 先看下继承关系
 	1. 红框就是AbstractApplicationContext.obtainFreshBeanFactory() 出参的类型
-	![image-20200527094513181](Spring-1/image-20200527094513181.png)
+	{% asset_img image-20200527094513181.png %}
 	
 2. 再看下里面的核心属性
 	```
@@ -425,6 +434,62 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 
 }
 ```
+##### AbstractApplicationContext.finishBeanFactoryInitialization
+- 实例化所有非lazy-init的singletons
+- 具体流转图如下
+	- {% asset_img image-20200602093355878.png %}
+- 后面具体的逻辑可以参见文章最下面的参考，这里就不在赘述了。
+- 需要注意的：
+	- 实例化类是根据反射来实例化的。
+	- 对于实例类中的属性，是使用populateBean方法进行属性赋值的
+	- 对于`autowire`的属性，会先查找/创建对应的实例，然后再进行赋值 
+```
+protected void finishBeanFactoryInitialization(ConfigurableListableBeanFactory beanFactory) {
+		// Initialize conversion service for this context.
+		// 加载conversionService 
+		if (beanFactory.containsBean(CONVERSION_SERVICE_BEAN_NAME) &&
+				beanFactory.isTypeMatch(CONVERSION_SERVICE_BEAN_NAME, ConversionService.class)) {
+			beanFactory.setConversionService(
+					beanFactory.getBean(CONVERSION_SERVICE_BEAN_NAME, ConversionService.class));
+		}
 
+		// Register a default embedded value resolver if no bean post-processor
+		// (such as a PropertyPlaceholderConfigurer bean) registered any before:
+		// at this point, primarily for resolution in annotation attribute values.
+		if (!beanFactory.hasEmbeddedValueResolver()) {
+			beanFactory.addEmbeddedValueResolver(new StringValueResolver() {
+				@Override
+				public String resolveStringValue(String strVal) {
+					return getEnvironment().resolvePlaceholders(strVal);
+				}
+			});
+		}
+
+		// Initialize LoadTimeWeaverAware beans early to allow for registering their transformers early.
+		String[] weaverAwareNames = beanFactory.getBeanNamesForType(LoadTimeWeaverAware.class, false, false);
+		for (String weaverAwareName : weaverAwareNames) {
+			getBean(weaverAwareName);
+		}
+
+		// Stop using the temporary ClassLoader for type matching.
+		beanFactory.setTempClassLoader(null);
+
+		// Allow for caching all bean definition metadata, not expecting further changes.
+		beanFactory.freezeConfiguration();
+
+		// Instantiate all remaining (non-lazy-init) singletons.
+		// 实际加载所有的singtons
+		beanFactory.preInstantiateSingletons()
+```
+#### 总结
+- IOC实际是为了更好的对实例，依赖更好的管理
+- IOC是一种思想，DI是常用的实现，springIOC就是DI的一种
+- Spring IOC 实现的思路大致可以分为
+	- 先找到所有的bean，记录所有的bean信息（包含，父类信息，是否需要override，是否允许循环依赖） 等
+	- 然后再实例化所有非lazy-init的是单例
+	- 最后通过对外getBean函数来实例需要的实例
+	
 #### 参考大佬
-[面试被问了几百遍的 IoC 和 AOP ，还在傻傻搞不清楚？](https://mp.weixin.qq.com/s/9_lUOU2tgVUf5VMZImfWJA)
+- [面试被问了几百遍的 IoC 和 AOP ，还在傻傻搞不清楚？](https://mp.weixin.qq.com/s/9_lUOU2tgVUf5VMZImfWJA)
+- [Spring IOC 容器源码分析
+](https://www.javadoop.com/post/spring-ioc)

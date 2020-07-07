@@ -1,5 +1,5 @@
 ---
-title: '聊聊java并发编程[HashMap && ConcurrenctHashMap]'
+title: '聊聊java并发编程[HashMap && ConcurrentHashMap]'
 tags:
   - java
   - HashMap
@@ -9,7 +9,7 @@ date: 2020-05-12 20:55:44
 ---
 
 
-本篇我们聊聊HashMap && ConcurrenctHashMap.
+本篇我们聊聊HashMap && ConcurrentHashMap.
 
 <!-- more -->
 

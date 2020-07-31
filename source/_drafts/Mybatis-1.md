@@ -1,5 +1,4 @@
 ---
-<<<<<<< HEAD
 title: 聊聊Mybatis[整体概览]
 tags: [java,mybatis,mysql]
 ---
@@ -12,18 +11,6 @@ tags: [java,mybatis,mysql]
 ![image-20200730170645454](Mybatis-1/image-20200730170645454.png)
 
 {% asset-img image-20200730170645454.png %}
-
-##### SqlSessionFactoryBuilder
-描述:每一个MyBatis的应用程序的入口是SqlSessionFactoryBuilder。通过读取配置文件
-作用: 生成SqlSessionFactory
-
-=======
-title: 聊聊Mybatis[整体架构]
-tags: [java,mybatis,mysql]
----
-
-
-#### 核心子模块
 
 ##### SqlSessionFactoryBuilder
 * 功能: 如题
@@ -88,4 +75,3 @@ tags: [java,mybatis,mysql]
 
 ##### Configuration
 * 功能: 保存所有的配置信息
->>>>>>> b1e8561b24729a2911f08ba444398c47a530d867

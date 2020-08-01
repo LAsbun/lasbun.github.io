@@ -1,17 +1,22 @@
 ---
-title: 聊聊Mybatis[一次SQL查询的过程]
-tags: [java,mybatis,mysql]
+title: '聊聊Mybatis[一次SQL查询的过程]'
+tags:
+  - java
+  - mybatis
+  - mysql
+date: 2020-08-01 23:05:29
 ---
 
-通过本篇文章我们聊一下一次SQL执行的路径都有哪些
+
+通过本篇文章我们聊一下一次SQL执行的步骤都有哪些
 
 <!-- more -->
 
 #### 总体执行图，本篇文章的核心
 
-![image-20200801152202042](Mybatis-3/image-20200801152202042.png)
+<!-- ![image-20200801152202042](Mybatis-3/image-20200801152202042.png) -->
 
-{% asset-img image-20200801152202042.png %}
+{% asset_img image-20200801152202042.png %}
 
 #### 部分核心代码分析
 
@@ -69,8 +74,8 @@ demo中的`articleDao.findOne(1);`就是调用mapperProxy.invoker方法
 ```
 ##### MapperMethod 
 MapperMethod 代码结构图
-![image-20200801154216500](Mybatis-3/image-20200801154216500.png)
-{% asset-img image-20200801154216500.png %}
+<!-- ![image-20200801154216500](Mybatis-3/image-20200801154216500.png) -->
+{% asset_img image-20200801154216500.png %}
 可以看出来实际上就是只有两个`public`的方法，一个是构造函数，一个就是execute.
 所有就是有两个功能
 * 解析Mapper接口方法,封装成MapperMethod对象。这里要注意下，有两个类成员 
@@ -126,4 +131,7 @@ public Object execute(SqlSession sqlSession, Object[] args) {
     return result;
   }
 ```
-在之后就是SqlSession->Executor->StatementHandler 这条链路了。具体可以参考下面的几篇文章。
+在之后就是SqlSession->Executor->StatementHandler 这条链路了。我会在其他的文章中详解
+
+#### 参考大佬
+- [Mybatis3.4.x技术内幕](https://my.oschina.net/zudajun?tab=newest&catalogId=3532897)

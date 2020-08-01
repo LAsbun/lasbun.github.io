@@ -1,17 +1,39 @@
 ---
-title: 聊聊Mybatis[整体概览]
-tags: [java,mybatis,mysql]
+title: '聊聊Mybatis[整体概览]'
+tags:
+  - java
+  - mybatis
+  - mysql
+date: 2020-08-01 23:05:26
 ---
+
+
+本篇文章从上层聊下Mybatis的功能模块，架构等。
 
 <!-- more -->
 
+#### 整体概览
+
+#####  功能模块
+<!-- ![image-20200801231855365](Mybatis-1/image-20200801231855365.png) -->
+{% asset_img image-20200801231855365.png %}
+
+##### 核心模块流转关系
+{% asset_img image-20200730170645454.png %}
+
+<!-- ![本地图片](Mybatis-1/image-20200730170645454.png) -->
+
+##### 整体处理流程
+<!-- ![本地图片](Mybatis-1/image-20200801231124701.png) -->
+{% asset_img image-20200801231124701.png %}
+
+##### Mybatis操作数据库步骤
+
+<!-- ![本地图片](Mybatis-1/image-20200801231231097.png) -->
+
+{% asset_img image-20200801231231097.png %}
+
 #### 核心模块(类)
-核心模块流转关系见下图
-
-![image-20200730170645454](Mybatis-1/image-20200730170645454.png)
-
-{% asset-img image-20200730170645454.png %}
-
 ##### SqlSessionFactoryBuilder
 * 功能: 如题
 * 描述: 每个Mybatis的程序的入口都是SqlSessionFactoryBuilder. 读取相关的配置，并且创建SqlSessionFactory.
@@ -49,7 +71,7 @@ tags: [java,mybatis,mysql]
 * 功能: 调用StatementHandler 访问数据库。如果开启缓存，会将结果存入缓存中
 * 描述: 实际运行的单位。在创建SqlSession的时候，随之创建。
 * 类图:
-	![image-20200730231452495](Mybatis-1/image-20200730231452495.png)	
+	<!-- ![image-20200730231452495](Mybatis-1/image-20200730231452495.png)	 -->
 	{% asset_img image-20200730231452495.png %}
 
 ##### StatementHandler
@@ -75,3 +97,7 @@ tags: [java,mybatis,mysql]
 
 ##### Configuration
 * 功能: 保存所有的配置信息
+
+#### 参考大佬
+- [Mybatis架构与原理](https://www.jianshu.com/p/15781ec742f2c)
+- [原理分析之二：框架整体设计](https://www.iteye.com/blog/chenjc-it-1460990)

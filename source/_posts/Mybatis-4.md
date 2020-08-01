@@ -1,15 +1,20 @@
 ---
-title: 聊聊Mybatis[事务管理]
-tags: [java,mybatis,mysql]
+title: '聊聊Mybatis[事务管理]'
+tags:
+  - java
+  - mybatis
+  - mysql
+date: 2020-08-01 23:05:31
 ---
+
 
 本篇我们来解密下Mybatis的事务管理
 
 <!-- more -->
 
 #### 事务基本概念
-![事务](Mybatis-4/事务.png)
-{% asset-img 事务.png %}
+<!-- ![事务](Mybatis-4/事务.png) -->
+{% asset_img 事务.png %}
 
 ####  Transaction接口
 ```
@@ -32,8 +37,8 @@ public interface Transaction {
 ##### 类关系图
 Mybatis中的Transaction是由工厂类生成的，具体可以在mybatis-config 配置`transactionManager`标签
 具体的类关系图见下图:
-![image-20200801170901309](Mybatis-4/image-20200801170901309.png)
-{% asset-img image-20200801170901309.png %}
+<!-- ![image-20200801170901309](Mybatis-4/image-20200801170901309.png) -->
+{% asset_img image-20200801170901309.png %}
 
 ##### JdbcTransaction 
 单独使用Mybatis时，是默认的实现，其代码就是JDBC事务的极简单封装。
@@ -81,8 +86,8 @@ Mybatis中的Transaction是由工厂类生成的，具体可以在mybatis-config
 - 无参openSession(),默认是autocommit=false 
 
 调用时序图见下图
-![image-20200801180016040](Mybatis-4/image-20200801180016040.png)
-{% asset-img image-20200801180016040.png %}
+<!-- ![image-20200801180016040](Mybatis-4/image-20200801180016040.png) -->
+{% asset_img image-20200801180016040.png %}
 
 ##### 代码分析
 ###### Transaction 创建
@@ -171,3 +176,6 @@ SqlSession.commit->Executor.commit->Transaction.commit
 
 #### 总结
 Mybatis的事务其实就是JDBC的事务管理，只是扩展了支持连接池的conn. 只要对数据库进行操作(增删改)都是在事务里面的。
+
+#### 参考大佬
+- [Mybatis3.4.x技术内幕](https://my.oschina.net/zudajun?tab=newest&catalogId=3532897)

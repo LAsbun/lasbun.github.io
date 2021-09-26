@@ -1,15 +1,21 @@
 ---
 title: 聊聊Apollo【基本架构&&核心概念】
-tags: [apollo, 权限]
+tags:
+  - apollo
+  - 权限
+date: 2021-09-27 05:04:32
 ---
+
 
 通过本文，你可以了解到Apollo的总体交互流程，整体架构，以及一些核心概念.
 
 <!-- more -->
+#### 前言
+最近在听杨波老师的微服务课程，对配置中心Apollo十分感兴趣，想深入了解下。所以接下来会逐步通过几篇文章来深入浅出Apollo。本文是第一篇，主要从整体上来感知下。
 
 #### 整体交互模型
 
-![image-20210120085758727](apollo-1/image-20210120085758727.png)
+<!-- ![image-20210120085758727](apollo-1/image-20210120085758727.png) -->
 {% asset_img image-20210120085758727.png %}
 核心分三个部分:
 - 用户
@@ -48,7 +54,7 @@ tags: [apollo, 权限]
 	- 私有配置: env+application+cluster+namespace+itemkey
 	- 共有配置env+cluster+namespace+itemkey 
 ##### 权限
-  ![image-20210120095915441](apollo-1/image-20210120095915441.png)
+  <!-- ![image-20210120095915441](apollo-1/image-20210120095915441.png) -->
   {% asset_img image-20210120095915441.png %}
 - 描述: 编辑，发布，项目管理
 - 角色:
@@ -59,4 +65,19 @@ tags: [apollo, 权限]
 	- Namespace 编辑，创建
 	- Item编辑(不可以发布)，发布(不可编辑)。  
 
+#### 系统架构
+
+<!-- ![Apollo-架构演变](apollo-1/Apollo-架构演变.png) -->
+{% asset_img Apollo-架构演变.png %}
+
+同时食用波波老师的文章(见参考链接)更佳。
+
+注意:
+1. 参考地址中波波老师是分5步逐步演进。我是分为了三步。对应主要是基于下游几个点:
+	1. V1本质是最原始的配置中心。包含了配置中心Apollo最基本的模块。 对应波波老师演进中的V1
+	2. V2本质是解决了V1中Client与服务端服务注册与感知问题。对应波波老师演进中的V2和V3
+	3. V3版本本质是解决语言兼容以及其他模块(portal，metaServer等)服务于发现。 对应波波老师演进中的V4和V5
+
+#### 参考大佬
+[微服务架构~携程Apollo配置中心架构剖析](https://mp.weixin.qq.com/s/-hUaQPzfsl9Lm3IqQW3VDQ)
 

@@ -78,11 +78,14 @@ theme: NexT
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
-  type: git
-  repo: https://github.com/LAsbun/lasbun.github.io
-  branch: master
-  name: lasbun
-  email: swsgoog@gmail.com
+  - type: git
+    repo: https://github.com/LAsbun/lasbun.github.io
+    branch: master
+    name: lasbun
+    email: swsgoog@gmail.com
+  - type: git
+    repo:  git@gitee.com:lasbun/lasbun.git
+    branch: master
 
 search:
   path: search.xml

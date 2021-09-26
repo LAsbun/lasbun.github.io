@@ -79,7 +79,7 @@ theme: NexT
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: git
-  repo: https://github.com/LAsbun/lasbun.github.io
+  repo: git@github.com:LAsbun/lasbun.github.io.git
   branch: master
   name: lasbun
   email: swsgoog@gmail.com

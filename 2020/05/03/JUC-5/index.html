@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="早些时候找了下java中锁分类, 今天我们聊下java中的锁">
+<meta name="keywords" content="java,lock,ReentrantLock,ReentrantReadWriteLock">
+<meta property="og:type" content="article">
+<meta property="og:title" content="聊聊java并发编程[JUC中的锁]">
+<meta property="og:url" content="http://yoursite.com/2020/05/03/JUC-5/index.html">
+<meta property="og:site_name" content="lasbun&#39;s blog">
+<meta property="og:description" content="早些时候找了下java中锁分类, 今天我们聊下java中的锁">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2023-08-20T13:50:23.128Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="聊聊java并发编程[JUC中的锁]">
+<meta name="twitter:description" content="早些时候找了下java中锁分类, 今天我们聊下java中的锁">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2020/05/03/JUC-5/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>聊聊java并发编程[JUC中的锁] | lasbun's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">lasbun's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="Searching..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/03/JUC-5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="lasbun">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lasbun's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">聊聊java并发编程[JUC中的锁]
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2020-05-03 10:56:35" itemprop="dateCreated datePublished" datetime="2020-05-03T10:56:35+08:00">2020-05-03</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2023-08-20 21:50:23" itemprop="dateModified" datetime="2023-08-20T21:50:23+08:00">2023-08-20</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>早些时候找了下<a href="https://lasbun.github.io/2019/12/23/java/JAVA中的锁/" target="_blank" rel="noopener">java中锁分类</a>, 今天我们聊下java中的锁</p>
+<a id="more"></a>
+
+<h4 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h4><p>在计算机科学中，锁是在执行多线程时用于强行限制资源访问的同步机制，即用于在并发控制中保证对互斥要求的满足。—&gt; 来自wikipedia</p>
+<h4 id="sychronized-vs-Lock"><a href="#sychronized-vs-Lock" class="headerlink" title="sychronized vs Lock"></a>sychronized vs Lock</h4><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>sychronized</th>
+<th>Lock</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>解决的问题</td>
+<td>对访问资源进行限制</td>
+<td>同sychronized</td>
+</tr>
+<tr>
+<td>实现</td>
+<td>内置关键字</td>
+<td>基于AQS，实现接口</td>
+</tr>
+<tr>
+<td>锁的获取与释放 可见性</td>
+<td>隐式(手动加锁，隐式释放)</td>
+<td>显式(需要手动获取与释放)</td>
+</tr>
+<tr>
+<td>是否支持中断</td>
+<td>不支持</td>
+<td>支持</td>
+</tr>
+</tbody></table>
+<h4 id="demo"><a href="#demo" class="headerlink" title="demo"></a>demo</h4><p>实现一个独占式锁</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br></pre></td><td class="code"><pre><span class="line">public class Mutex implements Lock &#123;</span><br><span class="line"></span><br><span class="line">    private static class Sync extends AbstractQueuedSynchronizer &#123;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        protected boolean isHeldExclusively() &#123;</span><br><span class="line">            return getState() == 1;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public boolean tryAcquire(int acquire) &#123;</span><br><span class="line">            if (compareAndSetState(0, 1)) &#123;</span><br><span class="line">                setExclusiveOwnerThread(Thread.currentThread());</span><br><span class="line">                return true;</span><br><span class="line">            &#125;</span><br><span class="line">            return false;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public boolean tryRelease(int release) &#123;</span><br><span class="line">            if (getState() == 0) throw new IllegalMonitorStateException();</span><br><span class="line">            setExclusiveOwnerThread(null);</span><br><span class="line">            setState(0);</span><br><span class="line">            return true;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Condition newCondition() &#123;</span><br><span class="line">            return new ConditionObject();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private final Sync sync = new Sync();</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void lock() &#123;</span><br><span class="line">        sync.acquire(1);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void lockInterruptibly() throws InterruptedException &#123;</span><br><span class="line">        sync.acquireInterruptibly(1);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public boolean tryLock() &#123;</span><br><span class="line">        return sync.tryAcquire(1);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public boolean tryLock(long time, TimeUnit unit) throws InterruptedException &#123;</span><br><span class="line">        return sync.tryAcquireNanos(1, unit.toNanos(time));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void unlock() &#123;</span><br><span class="line">        sync.release(1);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public Condition newCondition() &#123;</span><br><span class="line">        return sync.newCondition();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) throws InstantiationException, IllegalAccessException, InterruptedException &#123;</span><br><span class="line"></span><br><span class="line">        Mutex mutex = new Mutex();</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        Thread x = ObjectLock.class.newInstance();</span><br><span class="line">        x.start();</span><br><span class="line"></span><br><span class="line">        Thread t1 = mutex.new FuncLock2(false, mutex);</span><br><span class="line">        Thread t2 = mutex.new FuncLock2(true, mutex);</span><br><span class="line">        Thread t3 = mutex.new FuncLock2(true, mutex);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        t1.start();</span><br><span class="line">        t2.start();</span><br><span class="line">        t3.start();</span><br><span class="line">        t1.join();</span><br><span class="line">        t2.join();</span><br><span class="line">        t3.join();</span><br><span class="line"></span><br><span class="line">        System.out.println(mutex.testFinally());</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    public boolean testFinally()&#123;</span><br><span class="line">        try&#123;</span><br><span class="line">            return true;</span><br><span class="line">        &#125;</span><br><span class="line">        finally &#123;</span><br><span class="line">            System.out.println(&quot;dsadsa&quot;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public class FuncLock2 extends Thread &#123;</span><br><span class="line"></span><br><span class="line">        private Mutex mutex;</span><br><span class="line"></span><br><span class="line">        private boolean boo;</span><br><span class="line"></span><br><span class="line">        public FuncLock2(boolean b, Mutex mutex) &#123;</span><br><span class="line">            this.boo = b;</span><br><span class="line">            this.mutex = mutex;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        public synchronized void run() &#123;</span><br><span class="line">            if (this.boo) &#123;</span><br><span class="line">                this.read();</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                this.write();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        private void read() &#123;</span><br><span class="line">            mutex.lock();</span><br><span class="line">            try &#123;</span><br><span class="line">                System.out.println(Thread.currentThread().getName() + &quot; read lock ing...&quot;);</span><br><span class="line">                for (int i = 0; i &lt; 5; i++) &#123;</span><br><span class="line">                    System.out.println(mutex.sync.getQueuedThreads());</span><br><span class="line">                    Thread.sleep(1000);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; catch (Exception e) &#123;</span><br><span class="line"></span><br><span class="line">            &#125; finally &#123;</span><br><span class="line">                System.out.println(Thread.currentThread().getName() + &quot; read lock end...&quot;);</span><br><span class="line"></span><br><span class="line">                mutex.unlock();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        private void write() &#123;</span><br><span class="line">            mutex.lock();</span><br><span class="line"></span><br><span class="line">            try &#123;</span><br><span class="line">                System.out.println(Thread.currentThread().getName() + &quot; write lock ing..&quot;);</span><br><span class="line">                for (int i = 0; i &lt; 5; i++) &#123;</span><br><span class="line">                    System.out.println(mutex.sync.getQueuedThreads());</span><br><span class="line">                    Thread.sleep(1000);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">            &#125; catch (Exception e) &#123;</span><br><span class="line"></span><br><span class="line">            &#125; finally &#123;</span><br><span class="line">                System.out.println(Thread.currentThread().getName() + &quot; write end ing..&quot;);</span><br><span class="line"></span><br><span class="line">                mutex.unlock();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h4><p>其实就是基于AQS 内置的一部分参数，然后实现tryAcquire，acquire等接口。 具体的可以看下<a href="https://lasbun.github.io/2020/04/09/JAVA-AQS/" target="_blank" rel="noopener">这篇关于AQS的总结</a>. 理解AQS原理其实就基本把JUC中的锁摸的差不多了。<br>接下来我们主要的聊下公平锁，非公平锁，重入锁，重入读写锁。</p>
+<h4 id="公平锁-vs-非公平锁"><a href="#公平锁-vs-非公平锁" class="headerlink" title="公平锁 vs 非公平锁"></a>公平锁 vs 非公平锁</h4><p>这两个是两种实现方式，一般锁内置的实现都是会有实现这两种。比如重入锁，重入读写锁内部都有公平与非公平方式的实现</p>
+<p>“公平性与否是针对获取锁而言的，如果一个锁是公平的，那么锁的获取顺序就应该符合请求的绝对时间顺序，也就是FIFO。”</p>
+<h4 id="重入锁"><a href="#重入锁" class="headerlink" title="重入锁"></a>重入锁</h4><p>顾名思义就是一个线程在获取到锁之后，再次获取锁。<br>sychronized 也是可重入锁。<br>重入锁其实是独占式状态共享</p>
+<h5 id="demo-1"><a href="#demo-1" class="headerlink" title="demo"></a>demo</h5><ul>
+<li>打印当前等待的线程</li>
+<li>主要接口就是lock() &amp;&amp; unlock<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line">public class ReenTrantLockTest &#123;</span><br><span class="line"></span><br><span class="line">    static ReentrantLock reentrantLock = new ReentrantLock2(true);</span><br><span class="line"></span><br><span class="line">    static ReentrantLock reentrantLockUnfair = new ReentrantLock2(false);</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    public void testReenTrantLockUnFairAndFair() throws InterruptedException &#123;</span><br><span class="line"></span><br><span class="line">        Thread[] threads = new Thread[5];</span><br><span class="line"></span><br><span class="line">        for (int i = 0; i &lt; 5; i++) &#123;</span><br><span class="line">            threads[i] = new Thread(new Job(reentrantLock));</span><br><span class="line">            threads[i].start();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        for (int i = 0; i &lt; 5; i++) &#123;</span><br><span class="line">            threads[i].join();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private static class Job extends Thread &#123;</span><br><span class="line">        private Lock lock;</span><br><span class="line"></span><br><span class="line">        public Job(Lock lock) &#123;</span><br><span class="line">            this.lock = lock;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public void run() &#123;</span><br><span class="line">            for (int i = 0; i &lt; 2; i++) &#123;</span><br><span class="line">                lock.lock();</span><br><span class="line"></span><br><span class="line">                try &#123;</span><br><span class="line"></span><br><span class="line">                    System.out.print(&quot;获取锁的当前线程[&quot; + Thread.currentThread().getName() + &quot;]&quot;);</span><br><span class="line">                    System.out.print(&quot;等待队列中的线程[&quot;);</span><br><span class="line">                    ((ReentrantLock2) lock).getQueueThreads();</span><br><span class="line">                    System.out.println(&quot;]&quot;);</span><br><span class="line">                    reenDoSth();</span><br><span class="line">                &#125; catch (Exception e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125; finally &#123;</span><br><span class="line">                    lock.unlock();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        private void reenDoSth() &#123;</span><br><span class="line">            lock.lock();</span><br><span class="line">            try &#123;</span><br><span class="line">                System.out.println(&quot;reenDoSth[&quot; + Thread.currentThread().getName() + &quot;]&quot;);</span><br><span class="line">            &#125; catch (Exception e) &#123;</span><br><span class="line"></span><br><span class="line">            &#125; finally &#123;</span><br><span class="line">                lock.unlock();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private static class ReentrantLock2 extends ReentrantLock &#123;</span><br><span class="line">        public ReentrantLock2(boolean fair) &#123;</span><br><span class="line">            super(fair);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public void getQueueThreads() &#123;</span><br><span class="line">            ArrayList&lt;Thread&gt; threads = new ArrayList&lt;&gt;(super.getQueuedThreads());</span><br><span class="line">            threads.forEach(thread -&gt; System.out.print(thread.getName()));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h5 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h5><ul>
+<li>重入锁是一个典型的独占式锁</li>
+</ul>
+<h6 id="非公平锁"><a href="#非公平锁" class="headerlink" title="非公平锁"></a>非公平锁</h6><p>####### lock</p>
+<p>######## NonfairSync.lock </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 获取到锁</span><br><span class="line"> */</span><br><span class="line">final void lock() &#123;</span><br><span class="line">		// 如果可以直接获取到锁</span><br><span class="line">    if (compareAndSetState(0, 1))</span><br><span class="line">        setExclusiveOwnerThread(Thread.currentThread());</span><br><span class="line">    else</span><br><span class="line">    		// 没有获取到锁， acquir会掉用下面的tryAcquire。实际是会调用 Sync.nonfairTryAcquire 方法</span><br><span class="line">        acquire(1);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">protected final boolean tryAcquire(int acquires) &#123;</span><br><span class="line">    return nonfairTryAcquire(acquires);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>######## Sync.nonfairTryAcquire</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">         * 非公平锁的获取到锁</span><br><span class="line">         */</span><br><span class="line">        final boolean nonfairTryAcquire(int acquires) &#123;</span><br><span class="line">            final Thread current = Thread.currentThread();</span><br><span class="line">            int c = getState();</span><br><span class="line">            // 如果当前的状态是0, 则表示是可获取状态</span><br><span class="line">            if (c == 0) &#123;</span><br><span class="line">            		// 在多线程情况下，有可能其他线程已经获取到锁，所以要用CAS尝试赋值</span><br><span class="line">                if (compareAndSetState(0, acquires)) &#123;</span><br><span class="line">                    setExclusiveOwnerThread(current);</span><br><span class="line">                    return true;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            // 如果当前锁已经被占用了，尝试判断是否是当前线程，如果是当前线程，则表示可以再次获取到锁. 这里就是重入锁了。</span><br><span class="line">            // 仔细想一下这里其实就是非公平锁的非公平，如果某个线程获取到锁了，与此同时如果再有新的(下面会将为什么一定是新的线程)个线程尝试获取锁，就有可能直接获取到锁，继续进行下去。</span><br><span class="line">            // 为什么一定是新的线程：因为AQS某个线程(节点)获取到锁的前提是，其前置节点为head 并且tryAcquire获取到锁，才会继续执行下去。具体可以看前置的AQS源码梳理</span><br><span class="line">            else if (current == getExclusiveOwnerThread()) &#123;</span><br><span class="line">            		// 这里为什么是c+acquires: 因为有可能在该线程获取到的时候，已经存在其他线程获取到重入锁了</span><br><span class="line">                int nextc = c + acquires;</span><br><span class="line">                if (nextc &lt; 0) // overflow</span><br><span class="line">                    throw new Error(&quot;Maximum lock count exceeded&quot;);</span><br><span class="line">                setState(nextc);</span><br><span class="line">                return true;</span><br><span class="line">            &#125;</span><br><span class="line">            return false;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+<p>####### lock</p>
+<p>######## NonfairSync.unlock </p>
+<ul>
+<li>实际调用的是Sync.release<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">public final boolean release(int arg) &#123;</span><br><span class="line">			// 释放锁。</span><br><span class="line">       if (tryRelease(arg)) &#123;</span><br><span class="line">           Node h = head;</span><br><span class="line">           if (h != null &amp;&amp; h.waitStatus != 0)</span><br><span class="line">           		// 唤醒后继节点</span><br><span class="line">               unparkSuccessor(h);</span><br><span class="line">           return true;</span><br><span class="line">       &#125;</span><br><span class="line">       return false;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">protected final boolean tryRelease(int releases) &#123;</span><br><span class="line">           int c = getState() - releases;</span><br><span class="line">           if (Thread.currentThread() != getExclusiveOwnerThread())</span><br><span class="line">               throw new IllegalMonitorStateException();</span><br><span class="line">           boolean free = false;</span><br><span class="line">           // 这里c == 0 才表示该线程所有获取到锁的都已经释放掉了</span><br><span class="line">           if (c == 0) &#123;</span><br><span class="line">               free = true;</span><br><span class="line">               setExclusiveOwnerThread(null);</span><br><span class="line">           &#125;</span><br><span class="line">           setState(c);</span><br><span class="line">           return free;</span><br><span class="line">       &#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h6 id="公平锁"><a href="#公平锁" class="headerlink" title="公平锁"></a>公平锁</h6><p>####### lock</p>
+<p>######## FairSync.lock </p>
+<ul>
+<li>公平锁的获取稍微有点不一样<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">protected final boolean tryAcquire(int acquires) &#123;</span><br><span class="line">        final Thread current = Thread.currentThread();</span><br><span class="line">        int c = getState();</span><br><span class="line">        if (c == 0) &#123;</span><br><span class="line">        		// 比非公平锁多了一个一个  !hasQueuedPredecessors()  其他都一样</span><br><span class="line">        		// 就是判断是否有前置节点，就是公平锁的本质，一定是按照顺序来的</span><br><span class="line">            if (!hasQueuedPredecessors() &amp;&amp;</span><br><span class="line">                compareAndSetState(0, acquires)) &#123;</span><br><span class="line">                setExclusiveOwnerThread(current);</span><br><span class="line">                return true;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        else if (current == getExclusiveOwnerThread()) &#123;</span><br><span class="line">            int nextc = c + acquires;</span><br><span class="line">            if (nextc &lt; 0)</span><br><span class="line">                throw new Error(&quot;Maximum lock count exceeded&quot;);</span><br><span class="line">            setState(nextc);</span><br><span class="line">            return true;</span><br><span class="line">        &#125;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>####### unlock<br>公平锁的释放与非公平锁的释放共用的一套代码，这里就不赘述了</p>
+<h5 id="重入锁总结"><a href="#重入锁总结" class="headerlink" title="重入锁总结"></a>重入锁总结</h5><ul>
+<li>重入锁其实主要是依赖来AQS的内部实现。</li>
+<li>公平锁的释放与非公平锁的释放是一样的</li>
+<li>公平锁的获取与非公平锁的获取唯一的不同在与公平锁在判断是否可以获取到锁的时候，需要判断<strong>是否有前置节点</strong></li>
+</ul>
+<h4 id="读写锁"><a href="#读写锁" class="headerlink" title="读写锁"></a>读写锁</h4><h5 id="demo-2"><a href="#demo-2" class="headerlink" title="demo"></a>demo</h5><ul>
+<li>读写操作夹杂，然后看当前等待的读写线程<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br></pre></td><td class="code"><pre><span class="line">public class ReenTrantReadWriteLockTest &#123;</span><br><span class="line"></span><br><span class="line">    static Map&lt;String, Integer&gt; cache = new HashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    static ReentrantReadWriteLock reentrantReadWriteLockUnFair = new ReentrantReadWriteLock2(false);</span><br><span class="line">    static ReentrantReadWriteLock reentrantReadWriteLockFair = new ReentrantReadWriteLock2(true);</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    public void testWRLock() throws InterruptedException &#123;</span><br><span class="line"></span><br><span class="line">        int index = 0;</span><br><span class="line"></span><br><span class="line">        int length = 14;</span><br><span class="line"></span><br><span class="line">        Thread[] threads = new Thread[length];</span><br><span class="line">        for (int i = 0; i &lt; 10; i++) &#123;</span><br><span class="line"></span><br><span class="line">            threads[index++] = new ReadJob(reentrantReadWriteLockFair);</span><br><span class="line">            if (i % 3 == 0) &#123;</span><br><span class="line">                threads[index++] = new WriteJob(reentrantReadWriteLockFair);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        for (int i = 0; i &lt; length; i++) &#123;</span><br><span class="line">            threads[i].start();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">//        reentrantReadWriteLockFair.getQueueLength()</span><br><span class="line"></span><br><span class="line">        for (int i = 0; i &lt; length; i++) &#123;</span><br><span class="line">            threads[i].join();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    static class WriteJob extends Thread &#123;</span><br><span class="line"></span><br><span class="line">        ReadWriteLock readWriteLock;</span><br><span class="line"></span><br><span class="line">        public WriteJob(ReadWriteLock readWriteLock) &#123;</span><br><span class="line">            this.readWriteLock = readWriteLock;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public void run() &#123;</span><br><span class="line">            readWriteLock.writeLock().lock();</span><br><span class="line">            try &#123;</span><br><span class="line">                Thread.sleep(1000);</span><br><span class="line">                String s = Thread.currentThread().getId() + &quot;-&quot; + cache.get(Thread.currentThread().getName());</span><br><span class="line"></span><br><span class="line">                cache.put(Thread.currentThread().getName(), ((ReentrantReadWriteLock2) readWriteLock).getQueueLength());</span><br><span class="line"></span><br><span class="line">                System.out.println(&quot;write[&quot; + Thread.currentThread().getName() + &quot;] &quot; + s);</span><br><span class="line">                System.out.println(&quot;[&quot; + Thread.currentThread().getName() + &quot;] read &quot; + s);</span><br><span class="line">                System.out.print(&quot;等待队列中的线程[&quot;);</span><br><span class="line">                ((ReentrantReadWriteLock2) readWriteLock).getWaitQueue();</span><br><span class="line">                System.out.println(&quot;]&quot;);</span><br><span class="line"></span><br><span class="line">                read();</span><br><span class="line"></span><br><span class="line">            &#125; catch (Exception e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125; finally &#123;</span><br><span class="line">                readWriteLock.writeLock().unlock();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        private void read() &#123;</span><br><span class="line"></span><br><span class="line">            readWriteLock.readLock().lock();</span><br><span class="line">            try &#123;</span><br><span class="line"></span><br><span class="line">                Integer s = cache.get(Thread.currentThread().getName());</span><br><span class="line">                System.out.println(&quot;[&quot; + Thread.currentThread().getName() + &quot;] read &quot; + ((ReentrantReadWriteLock2) readWriteLock).getQueueLength());</span><br><span class="line">//                System.out.print(&quot;等待队列中的线程[&quot;);</span><br><span class="line">//                ((ReentrantReadWriteLock2) readWriteLock).getWaitQueue();</span><br><span class="line">//                System.out.println(&quot;]&quot;);</span><br><span class="line"></span><br><span class="line">            &#125; catch (Exception e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125; finally &#123;</span><br><span class="line">                readWriteLock.readLock().unlock();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    static class ReadJob extends WriteJob &#123;</span><br><span class="line"></span><br><span class="line">        public ReadJob(ReadWriteLock readWriteLock) &#123;</span><br><span class="line">            super(readWriteLock);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public void run() &#123;</span><br><span class="line">            super.read();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    private static class ReentrantReadWriteLock2 extends ReentrantReadWriteLock &#123;</span><br><span class="line">        public ReentrantReadWriteLock2(boolean fair) &#123;</span><br><span class="line">            super(fair);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public void getWaitQueue() &#123;</span><br><span class="line">        		// 打印等待写的线程</span><br><span class="line">            super.getQueuedWriterThreads().forEach(thread -&gt; System.out.print(thread.getName()));</span><br><span class="line">            System.out.println();</span><br><span class="line">            // 打印等待读的线程</span><br><span class="line">            super.getQueuedReaderThreads().forEach(thread -&gt; System.out.print(thread.getName()));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h4 id="读写锁-1"><a href="#读写锁-1" class="headerlink" title="读写锁"></a>读写锁</h4><p>重写读写锁 是共享式状态共享(读) + 独占式状态共享(写)</p>
+<ul>
+<li>举例A(R)-&gt;B(w)-&gt;C(R)-&gt;D(R)-&gt;E(W)-&gt;F(R)<ul>
+<li>正确的获取应该是<ul>
+<li>A获取到锁  其他线程等待</li>
+<li>B获取到锁(CDEF等待)</li>
+<li>C，D获取到锁(EF等待)</li>
+<li>E获取到锁(F等待)</li>
+<li>F获取到锁 <h5 id="demo-3"><a href="#demo-3" class="headerlink" title="demo"></a>demo</h5></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>下面的demo 是读写夹杂，打印等待读写的线程<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br></pre></td><td class="code"><pre><span class="line">public class ReenTrantReadWriteLockTest &#123;</span><br><span class="line"></span><br><span class="line">    static Map&lt;String, Integer&gt; cache = new HashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    static ReentrantReadWriteLock reentrantReadWriteLockUnFair = new ReentrantReadWriteLock2(false);</span><br><span class="line">    static ReentrantReadWriteLock reentrantReadWriteLockFair = new ReentrantReadWriteLock2(true);</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    public void testWRLock() throws InterruptedException &#123;</span><br><span class="line"></span><br><span class="line">        int index = 0;</span><br><span class="line"></span><br><span class="line">        int length = 14;</span><br><span class="line"></span><br><span class="line">        Thread[] threads = new Thread[length];</span><br><span class="line">        for (int i = 0; i &lt; 10; i++) &#123;</span><br><span class="line"></span><br><span class="line">            threads[index++] = new ReadJob(reentrantReadWriteLockFair);</span><br><span class="line">            if (i % 3 == 0) &#123;</span><br><span class="line">                threads[index++] = new WriteJob(reentrantReadWriteLockFair);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        for (int i = 0; i &lt; length; i++) &#123;</span><br><span class="line">            threads[i].start();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">//        reentrantReadWriteLockFair.getQueueLength()</span><br><span class="line"></span><br><span class="line">        for (int i = 0; i &lt; length; i++) &#123;</span><br><span class="line">            threads[i].join();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    static class WriteJob extends Thread &#123;</span><br><span class="line"></span><br><span class="line">        ReadWriteLock readWriteLock;</span><br><span class="line"></span><br><span class="line">        public WriteJob(ReadWriteLock readWriteLock) &#123;</span><br><span class="line">            this.readWriteLock = readWriteLock;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public void run() &#123;</span><br><span class="line">            readWriteLock.writeLock().lock();</span><br><span class="line">            try &#123;</span><br><span class="line">                Thread.sleep(1000);</span><br><span class="line">                String s = Thread.currentThread().getId() + &quot;-&quot; + cache.get(Thread.currentThread().getName());</span><br><span class="line"></span><br><span class="line">                cache.put(Thread.currentThread().getName(), ((ReentrantReadWriteLock2) readWriteLock).getQueueLength());</span><br><span class="line"></span><br><span class="line">                System.out.println(&quot;write[&quot; + Thread.currentThread().getName() + &quot;] &quot; + s);</span><br><span class="line">                System.out.println(&quot;[&quot; + Thread.currentThread().getName() + &quot;] read &quot; + s);</span><br><span class="line">                System.out.print(&quot;等待队列中的线程[&quot;);</span><br><span class="line">                ((ReentrantReadWriteLock2) readWriteLock).getWaitQueue();</span><br><span class="line">                System.out.println(&quot;]&quot;);</span><br><span class="line"></span><br><span class="line">                read();</span><br><span class="line"></span><br><span class="line">            &#125; catch (Exception e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125; finally &#123;</span><br><span class="line">                readWriteLock.writeLock().unlock();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        private void read() &#123;</span><br><span class="line"></span><br><span class="line">            readWriteLock.readLock().lock();</span><br><span class="line">            try &#123;</span><br><span class="line"></span><br><span class="line">                Integer s = cache.get(Thread.currentThread().getName());</span><br><span class="line">                System.out.println(&quot;[&quot; + Thread.currentThread().getName() + &quot;] read &quot; + ((ReentrantReadWriteLock2) readWriteLock).getQueueLength());</span><br><span class="line">//                System.out.print(&quot;等待队列中的线程[&quot;);</span><br><span class="line">//                ((ReentrantReadWriteLock2) readWriteLock).getWaitQueue();</span><br><span class="line">//                System.out.println(&quot;]&quot;);</span><br><span class="line"></span><br><span class="line">            &#125; catch (Exception e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125; finally &#123;</span><br><span class="line">                readWriteLock.readLock().unlock();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    static class ReadJob extends WriteJob &#123;</span><br><span class="line"></span><br><span class="line">        public ReadJob(ReadWriteLock readWriteLock) &#123;</span><br><span class="line">            super(readWriteLock);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public void run() &#123;</span><br><span class="line">            super.read();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    private static class ReentrantReadWriteLock2 extends ReentrantReadWriteLock &#123;</span><br><span class="line">        public ReentrantReadWriteLock2(boolean fair) &#123;</span><br><span class="line">            super(fair);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public void getWaitQueue() &#123;</span><br><span class="line">            super.getQueuedWriterThreads().forEach(thread -&gt; System.out.print(thread.getName()));</span><br><span class="line">            System.out.println();</span><br><span class="line">            super.getQueuedReaderThreads().forEach(thread -&gt; System.out.print(thread.getName()));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h5 id="原理剖析"><a href="#原理剖析" class="headerlink" title="原理剖析"></a>原理剖析</h5><p>详细的剖析可以看<a href="https://www.cnblogs.com/xiaoxi/p/9140541.html" target="_blank" rel="noopener">这篇文章</a><br>我这边主要聊几个关键点</p>
+<ul>
+<li><p>读写锁是可重入锁</p>
+</li>
+<li><p>状态的设计</p>
+<ul>
+<li>一共32位。 高16位为读锁的状态 ，底16位为写锁的状态。</li>
+<li>所以判断读写锁，根据位运算计算即可。</li>
+</ul>
+</li>
+<li><p>写锁</p>
+<ul>
+<li>排它锁</li>
+<li>获取的时候需要判断是否有读锁在获取，如果有，则获取失败.（如果可以获取成功，就是锁升级，ReentrantWriteReadLock 不支持）</li>
+</ul>
+</li>
+<li><p>读锁</p>
+<ul>
+<li>共享锁</li>
+<li>获取的时候，如果存在写锁，并且是当前线程，则是可以获取到锁的（锁降级） 。</li>
+</ul>
+</li>
+<li><p>HoldCounter</p>
+<ul>
+<li>共享锁从某一角度来讲，就是一个计数器。这个计数器是于当前线程绑定的。 而HoldCounter可以理解为是这个计数器(原理是ThreadLocalCache)</li>
+</ul>
+</li>
+</ul>
+<h4 id="参考大佬"><a href="#参考大佬" class="headerlink" title="参考大佬"></a>参考大佬</h4><ul>
+<li><a href="https://www.cnblogs.com/xiaoxi/p/9140541.html" target="_blank" rel="noopener">ReentrantReadWriteLock读写锁详解</a></li>
+<li>《java并发编程的艺术》方腾飞　魏鹏　程晓明　著</li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/java/" rel="tag"># java</a>
+          
+            <a href="/tags/lock/" rel="tag"># lock</a>
+          
+            <a href="/tags/ReentrantLock/" rel="tag"># ReentrantLock</a>
+          
+            <a href="/tags/ReentrantReadWriteLock/" rel="tag"># ReentrantReadWriteLock</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/04/29/JUC-4/" rel="next" title="聊聊java并发编程[JUC中的原子操作类]">
+                <i class="fa fa-chevron-left"></i> 聊聊java并发编程[JUC中的原子操作类]
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/05/03/JUC-6/" rel="prev" title="聊聊java并发编程[JUC中的Condition]">
+                聊聊java并发编程[JUC中的Condition] <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">lasbun</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">85</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                    
+                      
+                    
+                    <span class="site-state-item-count">1</span>
+                    <span class="site-state-item-name">categories</span>
+                  
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">58</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#场景"><span class="nav-number">1.</span> <span class="nav-text">场景</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#sychronized-vs-Lock"><span class="nav-number">2.</span> <span class="nav-text">sychronized vs Lock</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#demo"><span class="nav-number">3.</span> <span class="nav-text">demo</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#原理"><span class="nav-number">4.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#公平锁-vs-非公平锁"><span class="nav-number">5.</span> <span class="nav-text">公平锁 vs 非公平锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#重入锁"><span class="nav-number">6.</span> <span class="nav-text">重入锁</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#demo-1"><span class="nav-number">6.1.</span> <span class="nav-text">demo</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#源码分析"><span class="nav-number">6.2.</span> <span class="nav-text">源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#非公平锁"><span class="nav-number">6.2.1.</span> <span class="nav-text">非公平锁</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#公平锁"><span class="nav-number">6.2.2.</span> <span class="nav-text">公平锁</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#重入锁总结"><span class="nav-number">6.3.</span> <span class="nav-text">重入锁总结</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#读写锁"><span class="nav-number">7.</span> <span class="nav-text">读写锁</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#demo-2"><span class="nav-number">7.1.</span> <span class="nav-text">demo</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#读写锁-1"><span class="nav-number">8.</span> <span class="nav-text">读写锁</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#demo-3"><span class="nav-number">8.1.</span> <span class="nav-text">demo</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#原理剖析"><span class="nav-number">8.2.</span> <span class="nav-text">原理剖析</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考大佬"><span class="nav-number">9.</span> <span class="nav-text">参考大佬</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2023</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lasbun</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

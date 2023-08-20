@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="本篇文章聊下MySQL索引。">
+<meta name="keywords" content="mysql">
+<meta property="og:type" content="article">
+<meta property="og:title" content="聊聊MySQL[索引概念梳理]">
+<meta property="og:url" content="http://yoursite.com/2020/08/05/MySQL-2/index.html">
+<meta property="og:site_name" content="lasbun&#39;s blog">
+<meta property="og:description" content="本篇文章聊下MySQL索引。">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/2020/08/05/MySQL-2/image-20200805141143600.png">
+<meta property="og:image" content="http://yoursite.com/2020/08/05/MySQL-2/image-20200805174524938.png">
+<meta property="og:updated_time" content="2023-08-20T13:50:23.147Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="聊聊MySQL[索引概念梳理]">
+<meta name="twitter:description" content="本篇文章聊下MySQL索引。">
+<meta name="twitter:image" content="http://yoursite.com/2020/08/05/MySQL-2/image-20200805141143600.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2020/08/05/MySQL-2/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>聊聊MySQL[索引概念梳理] | lasbun's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">lasbun's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="Searching..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/05/MySQL-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="lasbun">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lasbun's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">聊聊MySQL[索引概念梳理]
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2020-08-05 18:15:46" itemprop="dateCreated datePublished" datetime="2020-08-05T18:15:46+08:00">2020-08-05</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2023-08-20 21:50:23" itemprop="dateModified" datetime="2023-08-20T21:50:23+08:00">2023-08-20</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本篇文章聊下MySQL索引。</p>
+<a id="more"></a>
+
+<h4 id="索引使用来解决什么问题。"><a href="#索引使用来解决什么问题。" class="headerlink" title="索引使用来解决什么问题。"></a>索引使用来解决什么问题。</h4><ul>
+<li>没有索引，那么查询数据，每次都是遍历查询全部的数据，那么如果数据量大的话，会慢的要死。所以索引创建出来的本质目的就是为了<strong><code>解决查询慢</code></strong>的问题</li>
+</ul>
+<h4 id="MySQL支持哪些索引"><a href="#MySQL支持哪些索引" class="headerlink" title="MySQL支持哪些索引"></a>MySQL支持哪些索引</h4><ul>
+<li>primary key 唯一索引，不允许为NULL</li>
+<li>Unique 唯一索引，允许为NULL</li>
+<li>Index 普通索引以及组合索引</li>
+<li>FullText 全文索引</li>
+</ul>
+<h4 id="MySQL支持哪些数据结构"><a href="#MySQL支持哪些数据结构" class="headerlink" title="MySQL支持哪些数据结构"></a>MySQL支持哪些数据结构</h4><ul>
+<li>Hash</li>
+<li>B+</li>
+</ul>
+<h5 id="从无序数据结构VS有序数据结构的角度，聊下为啥MySQL索引是B-树"><a href="#从无序数据结构VS有序数据结构的角度，聊下为啥MySQL索引是B-树" class="headerlink" title="从无序数据结构VS有序数据结构的角度，聊下为啥MySQL索引是B+树"></a>从无序数据结构VS有序数据结构的角度，聊下为啥MySQL索引是B+树</h5><p>为什么这么多都可以优化索引，为什么MySQL选择了B+,我们从下面几个方面来解释下。</p>
+<h5 id="无序数据结构"><a href="#无序数据结构" class="headerlink" title="无序数据结构"></a>无序数据结构</h5><p>数据结构是没有顺序的，所以一般就是KV等值查询，对范围查询支持性还是不行</p>
+<h6 id="Hash"><a href="#Hash" class="headerlink" title="Hash"></a>Hash</h6><p>简单讲Hash就是一个KV结构的数据结构。</p>
+<ul>
+<li>优点<ul>
+<li>对于<code>等值查询</code>查询速度会非常快</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>对于KV结构的很明显支持不了非<code>等值查询</code>的场景。</li>
+</ul>
+</li>
+<li>最佳适用场景: 对于需要等值查询的茶镜比如Redis、Memcached这些中间件使用Hash效果就会更好<h5 id="有序数据结构"><a href="#有序数据结构" class="headerlink" title="有序数据结构"></a>有序数据结构</h5>有序的数据结构有很多，基本的有序数组，二叉排序树，平衡二叉树，B树(B-树)，B+树，红黑树。下面我们就逐个来解释下其优缺点.</li>
+</ul>
+<h6 id="有序数组"><a href="#有序数组" class="headerlink" title="有序数组"></a>有序数组</h6><p>顾名思义，就是一个排好序的数组。</p>
+<ul>
+<li>优点<ul>
+<li>其对于等值（二分或者其他的查找方式）或者是范围查询都可以很好的支持.</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>对于update类型操作(增删改)数据，会改变其原有数据结构，成本会有点高.    </li>
+</ul>
+</li>
+<li>适用场景：缓存静态数据(不会被修改，或者是极少被修改的场景)</li>
+</ul>
+<h6 id="二叉排序树"><a href="#二叉排序树" class="headerlink" title="二叉排序树"></a>二叉排序树</h6><p>二叉排序树数据结构分析，参见博客相关分析文章。</p>
+<ul>
+<li>优点<ul>
+<li>有序,可以支持范围查找。对于等值查找时间复杂度最优是O(lgN) 最差是O(N)。    </li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>对于极端情况下如下图，层数就过于高了，所以就需要下面的平衡二叉树 </li>
+<li><img src="/2020/08/05/MySQL-2/image-20200805141143600.png"></li>
+</ul>
+</li>
+<li>适用场景：范围查询支持度不是很好，一般场景都是用二叉排序树数的优化版本。</li>
+</ul>
+<h6 id="平衡二叉树"><a href="#平衡二叉树" class="headerlink" title="平衡二叉树"></a>平衡二叉树</h6><p>平衡二叉树简单讲就是讲二叉树极端lg(N)情况消除掉了</p>
+<ul>
+<li>优点<ul>
+<li>有序,可以支持范围查找。对于等值查找时间复杂度稳定为O(lgN)。</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>因为是二叉树，如果数据节点过多，那么树就会特别高。如果有N个节点，那么层高就是lg2(N+1). 因为索引不一定是在内存中存储的，所以树越深，磁盘io越多，那么查询时间就长。</li>
+</ul>
+</li>
+<li>适用场景：平衡二叉树已经是一个很好的数据结构了。对于范围和等值查询等支持的都是很好。所以如果是数量量较少，使用内存就可以使用，建议是使用平衡二叉树。</li>
+</ul>
+<h6 id="B树"><a href="#B树" class="headerlink" title="B树"></a>B树</h6><p>B树是平衡二叉树的进化版。主要是解决树过于深，导致磁盘io过多。简单理解B树就是<code>平衡多叉树</code>。<strong>B树中的非页节点保存数据</strong>。</p>
+<ul>
+<li>优点<ul>
+<li>有序，在平衡二叉树的基础上，扩展为并不仅仅是二叉。从一定程度上降低了树的深度，减少io查询次数.</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>其实B树已经是很好了。如果硬要说缺点，就是查询效率没有B+树高.</li>
+</ul>
+</li>
+<li>适用场景: 大数据量，想要优化性能。 MongoDB索引使用的是B树。</li>
+</ul>
+<h6 id="B-树"><a href="#B-树" class="headerlink" title="B+树"></a>B+树</h6><p>B+树就是在B树的基础上，冗余了在非叶子节点冗余了索引数据，提高范围查询效率。</p>
+<ul>
+<li><p>优点: 有序，在列举的数据结构中，查询效率较高，以及对磁盘io的次数较低。</p>
+</li>
+<li><p>缺点: 实现复杂。增删改查都需要很复杂的操作。大佬可以手撸代码。</p>
+</li>
+<li><p>B+树的节点中存储多少个元素最合适</p>
+<ul>
+<li>为一页或者是页的倍数。因为不是页的倍数，磁盘io都是会造成资源的浪费。</li>
+</ul>
+</li>
+</ul>
+<h5 id="页的概念"><a href="#页的概念" class="headerlink" title="页的概念"></a>页的概念</h5><img src="/2020/08/05/MySQL-2/image-20200805174524938.png">
+
+<ul>
+<li>数据页之间是双向链表</li>
+<li>数据页内的数据记录之间是单向链表</li>
+<li>每个数据页都会在有一部分空间用来存储页目录。通过主键查找记录的时候，可以在页目录中使用二分快速定位对应的记录槽，然后在槽里面找到对应的记录。</li>
+<li>一次查询过程<ul>
+<li>定位到记录所在页</li>
+<li>遍历双向链表找到所在页</li>
+<li>在业内找到对应的记录</li>
+<li>如果不是主键查询，就只能遍历所在页的所有记录(单链表)<h5 id="回表"><a href="#回表" class="headerlink" title="回表"></a>回表</h5>其实就是根据某个索引找到对应的主键。因为主键肯定是唯一的，所以会找的更快些。</li>
+</ul>
+</li>
+</ul>
+<h5 id="覆盖索引"><a href="#覆盖索引" class="headerlink" title="覆盖索引"></a>覆盖索引</h5><p>其实就是某个索引已经包含了要查 的数据，所以就没有必要找到实际的记录。比如根据索引name 查找主键id。那么索引那么已经包含了id，就没有必要再继续查询了。</p>
+<h5 id="最左匹配原则"><a href="#最左匹配原则" class="headerlink" title="最左匹配原则"></a>最左匹配原则</h5><ul>
+<li>索引可以指定1列(a), 也可以指定多个列(a,b,c,d)即联合索引</li>
+<li>如果是联合索引，索引只能用于查找key是否存在(相等)，遇到范围查询(&gt; &lt; between like)等就不能进一步匹配，会后退为线性查找。<ul>
+<li>例子: 如果有索引(a,b,c) 查询SQL <code>select * from tabl a=1 and b&gt;2 and c &gt; 3</code>. 则会在每个节点依次命中a,b 无法命中c. 因为b已经是范围查询了, c就更不会排序查找了。</li>
+</ul>
+</li>
+</ul>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><ul>
+<li>索引是为了查找速度快而出来的。如果快速定位到对应的记录，或者是根据索引能够筛选出一大部分非目标记录，这就是优化查询的本质。</li>
+</ul>
+<h4 id="参考大佬"><a href="#参考大佬" class="headerlink" title="参考大佬"></a>参考大佬</h4><p><a href="https://mp.weixin.qq.com/s/_9rDde9wRYoZeh07EASNQQ" target="_blank" rel="noopener">《爱上面试官》系列-数据库索引</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/mysql/" rel="tag"># mysql</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/08/05/Mysql-1/" rel="next" title="聊聊MySQL[基本概念]">
+                <i class="fa fa-chevron-left"></i> 聊聊MySQL[基本概念]
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/08/12/ThreadLocal/" rel="prev" title="聊聊Java中的ThreadLocal">
+                聊聊Java中的ThreadLocal <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">lasbun</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">85</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                    
+                      
+                    
+                    <span class="site-state-item-count">1</span>
+                    <span class="site-state-item-name">categories</span>
+                  
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">58</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#索引使用来解决什么问题。"><span class="nav-number">1.</span> <span class="nav-text">索引使用来解决什么问题。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MySQL支持哪些索引"><span class="nav-number">2.</span> <span class="nav-text">MySQL支持哪些索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MySQL支持哪些数据结构"><span class="nav-number">3.</span> <span class="nav-text">MySQL支持哪些数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#从无序数据结构VS有序数据结构的角度，聊下为啥MySQL索引是B-树"><span class="nav-number">3.1.</span> <span class="nav-text">从无序数据结构VS有序数据结构的角度，聊下为啥MySQL索引是B+树</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#无序数据结构"><span class="nav-number">3.2.</span> <span class="nav-text">无序数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#Hash"><span class="nav-number">3.2.1.</span> <span class="nav-text">Hash</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#有序数据结构"><span class="nav-number">3.3.</span> <span class="nav-text">有序数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#有序数组"><span class="nav-number">3.3.1.</span> <span class="nav-text">有序数组</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#二叉排序树"><span class="nav-number">3.3.2.</span> <span class="nav-text">二叉排序树</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#平衡二叉树"><span class="nav-number">3.3.3.</span> <span class="nav-text">平衡二叉树</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#B树"><span class="nav-number">3.3.4.</span> <span class="nav-text">B树</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#B-树"><span class="nav-number">3.3.5.</span> <span class="nav-text">B+树</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#页的概念"><span class="nav-number">3.4.</span> <span class="nav-text">页的概念</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#回表"><span class="nav-number">3.5.</span> <span class="nav-text">回表</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#覆盖索引"><span class="nav-number">3.6.</span> <span class="nav-text">覆盖索引</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#最左匹配原则"><span class="nav-number">3.7.</span> <span class="nav-text">最左匹配原则</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考大佬"><span class="nav-number">5.</span> <span class="nav-text">参考大佬</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2023</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lasbun</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

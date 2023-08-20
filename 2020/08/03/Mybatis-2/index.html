@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="本文深入分析下Executor一些核心原理">
+<meta name="keywords" content="java,mysql,mybatis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="聊聊Mybatis[Exector核心原理]">
+<meta property="og:url" content="http://yoursite.com/2020/08/03/Mybatis-2/index.html">
+<meta property="og:site_name" content="lasbun&#39;s blog">
+<meta property="og:description" content="本文深入分析下Executor一些核心原理">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/2020/08/03/Mybatis-2/mybatis-executor.png">
+<meta property="og:image" content="http://yoursite.com/2020/08/03/Mybatis-2/image-20200803154241375.png">
+<meta property="og:updated_time" content="2023-08-20T13:50:23.157Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="聊聊Mybatis[Exector核心原理]">
+<meta name="twitter:description" content="本文深入分析下Executor一些核心原理">
+<meta name="twitter:image" content="http://yoursite.com/2020/08/03/Mybatis-2/mybatis-executor.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2020/08/03/Mybatis-2/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>聊聊Mybatis[Exector核心原理] | lasbun's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">lasbun's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="Searching..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/03/Mybatis-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="lasbun">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lasbun's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">聊聊Mybatis[Exector核心原理]
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2020-08-03 09:07:52" itemprop="dateCreated datePublished" datetime="2020-08-03T09:07:52+08:00">2020-08-03</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2023-08-20 21:50:23" itemprop="dateModified" datetime="2023-08-20T21:50:23+08:00">2023-08-20</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文深入分析下Executor一些核心原理</p>
+<a id="more"></a>
+
+<p>SqlSession对数据库的操作都是委托给Executor.下面我们剖析下Executor的核心原理。</p>
+<h4 id="前述"><a href="#前述" class="headerlink" title="前述"></a>前述</h4><p>Executor 上承SqlSession 下接StatementHandler。处于Mybatis体系的核心，深入理解Executor的实现原理，对实际开发会更有帮助。</p>
+<h4 id="Executor接口"><a href="#Executor接口" class="headerlink" title="Executor接口"></a>Executor接口</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">public interface Executor &#123;</span><br><span class="line"></span><br><span class="line">  ResultHandler NO_RESULT_HANDLER = null;</span><br><span class="line"></span><br><span class="line">  int update(MappedStatement ms, Object parameter) throws SQLException;</span><br><span class="line"></span><br><span class="line">  &lt;E&gt; List&lt;E&gt; query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, CacheKey cacheKey, BoundSql boundSql) throws SQLException;</span><br><span class="line"></span><br><span class="line">  &lt;E&gt; List&lt;E&gt; query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler) throws SQLException;</span><br><span class="line"></span><br><span class="line">  &lt;E&gt; Cursor&lt;E&gt; queryCursor(MappedStatement ms, Object parameter, RowBounds rowBounds) throws SQLException;</span><br><span class="line">	// 这个是为了批量查询</span><br><span class="line">  List&lt;BatchResult&gt; flushStatements() throws SQLException;</span><br><span class="line"></span><br><span class="line">  void commit(boolean required) throws SQLException;</span><br><span class="line"></span><br><span class="line">  void rollback(boolean required) throws SQLException;</span><br><span class="line"></span><br><span class="line">  CacheKey createCacheKey(MappedStatement ms, Object parameterObject, RowBounds rowBounds, BoundSql boundSql);</span><br><span class="line"></span><br><span class="line">  boolean isCached(MappedStatement ms, CacheKey key);</span><br><span class="line"></span><br><span class="line">  void clearLocalCache();</span><br><span class="line"></span><br><span class="line">  void deferLoad(MappedStatement ms, MetaObject resultObject, String property, CacheKey key, Class&lt;?&gt; targetType);</span><br><span class="line"></span><br><span class="line">  Transaction getTransaction();</span><br><span class="line"></span><br><span class="line">  void close(boolean forceRollback);</span><br><span class="line"></span><br><span class="line">  boolean isClosed();</span><br><span class="line">	// 这个wrapper实际是只会用到CacheExecutor. 用到SelectKeyGenerator.processGeneratedKeys()函数 提供对应的事务。我理解为了保证同一个Session的事务都是一个事务管理器。</span><br><span class="line">  void setExecutorWrapper(Executor executor);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="类关系图"><a href="#类关系图" class="headerlink" title="类关系图"></a>类关系图</h5><p>实际只有五种:</p>
+<ul>
+<li>SimpleExecutor</li>
+<li>ReuseExecutor</li>
+<li>ClosedExecutor</li>
+<li>CachingExecutor</li>
+<li>BatchExecutor</li>
+</ul>
+<img src="/2020/08/03/Mybatis-2/mybatis-executor.png">
+
+<p>注意:<strong>以上执行器的生命周期都是在SqlSession生命周期内</strong></p>
+<h5 id="SimpleExecutor"><a href="#SimpleExecutor" class="headerlink" title="SimpleExecutor"></a>SimpleExecutor</h5><p>执行update/select 每次都创建一个StatementHandler,使用完就关闭。</p>
+<h5 id="CloseExecutor"><a href="#CloseExecutor" class="headerlink" title="CloseExecutor"></a>CloseExecutor</h5><p>私有类，没有什么实质实现.</p>
+<h5 id="ReuseExecutor"><a href="#ReuseExecutor" class="headerlink" title="ReuseExecutor"></a>ReuseExecutor</h5><p>执行update/select 创建了StatementHandler之后，使用完，不关闭，缓存起来。</p>
+<h5 id="BatchExecutor"><a href="#BatchExecutor" class="headerlink" title="BatchExecutor"></a>BatchExecutor</h5><p>执行update. 不支持批量select.  所有的sql都会调用StatementHandler.addBatch()，等待executeBatch().<br>这里特别要注意下: 每个statement都可能是一批sql. BatchExecutor是维护了多个statement。借用大佬的解释<code>BatchExecutor 维护了多个桶，每个桶里面有多个自己的SQL，就像苹果蓝里装了很多苹果，番茄蓝里装了很多番茄，最后，再统一倒进仓库(统一执行)。</code></p>
+<h5 id="CacheExecutor"><a href="#CacheExecutor" class="headerlink" title="CacheExecutor"></a>CacheExecutor</h5><p>基于装饰器模式,如果有缓存就直接返回缓存，如果没有缓存就委托给<code>SimpleExecutor</code>|<code>ReuseExecutor</code>|<code>BatchExecutor</code>.这三种执行器执行。</p>
+<h4 id="部分源码分析"><a href="#部分源码分析" class="headerlink" title="部分源码分析"></a>部分源码分析</h4><h5 id="BaseExecutor-抽象类"><a href="#BaseExecutor-抽象类" class="headerlink" title="BaseExecutor 抽象类"></a>BaseExecutor 抽象类</h5><p>部分代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">  public int update(MappedStatement ms, Object parameter) throws SQLException &#123;</span><br><span class="line">    ErrorContext.instance().resource(ms.getResource()).activity(&quot;executing an update&quot;).object(ms.getId());</span><br><span class="line">    if (closed) &#123;</span><br><span class="line">      throw new ExecutorException(&quot;Executor was closed.&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    clearLocalCache();</span><br><span class="line">    return doUpdate(ms, parameter);</span><br><span class="line">  &#125;</span><br><span class="line">  protected abstract int doUpdate(MappedStatement ms, Object parameter)</span><br><span class="line">      throws SQLException;</span><br><span class="line"></span><br><span class="line">  protected abstract List&lt;BatchResult&gt; doFlushStatements(boolean isRollback)</span><br><span class="line">      throws SQLException;</span><br><span class="line"></span><br><span class="line">  protected abstract &lt;E&gt; List&lt;E&gt; doQuery(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql)</span><br><span class="line">      throws SQLException;</span><br><span class="line"></span><br><span class="line">  protected abstract &lt;E&gt; Cursor&lt;E&gt; doQueryCursor(MappedStatement ms, Object parameter, RowBounds rowBounds, BoundSql boundSql)</span><br><span class="line">      throws SQLException;</span><br></pre></td></tr></table></figure>
+
+<p>典型的模板模式，具体的实现交给下面的子类来实现.</p>
+<h5 id="SimpleExecutor-1"><a href="#SimpleExecutor-1" class="headerlink" title="SimpleExecutor"></a>SimpleExecutor</h5><p>很简单，就是创建Statement,然后执行完后，就关闭掉。 其他方法可以看下具体实现，原理都一样.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">  public int doUpdate(MappedStatement ms, Object parameter) throws SQLException &#123;</span><br><span class="line">    Statement stmt = null;</span><br><span class="line">    try &#123;</span><br><span class="line">      Configuration configuration = ms.getConfiguration();</span><br><span class="line">      StatementHandler handler = configuration.newStatementHandler(this, ms, parameter, RowBounds.DEFAULT, null, null);</span><br><span class="line">      stmt = prepareStatement(handler, ms.getStatementLog());</span><br><span class="line">      return handler.update(stmt);</span><br><span class="line">    &#125; finally &#123;</span><br><span class="line">      closeStatement(stmt);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意：SimpleExecutor不支持doFlushStatements(批量刷新statement),所以是直接返回的一个空列表.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public List&lt;BatchResult&gt; doFlushStatements(boolean isRollback) throws SQLException &#123;</span><br><span class="line">  return Collections.emptyList();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="ReuseExecutor-1"><a href="#ReuseExecutor-1" class="headerlink" title="ReuseExecutor"></a>ReuseExecutor</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">  public int doUpdate(MappedStatement ms, Object parameter) throws SQLException &#123;</span><br><span class="line">    Configuration configuration = ms.getConfiguration();</span><br><span class="line">    StatementHandler handler = configuration.newStatementHandler(this, ms, parameter, RowBounds.DEFAULT, null, null);</span><br><span class="line">    // 这里做缓存，如果存在就直接返回，不存在直接创建，再返回</span><br><span class="line">    Statement stmt = prepareStatement(handler, ms.getStatementLog());</span><br><span class="line">    return handler.update(stmt);</span><br><span class="line">  &#125;</span><br><span class="line"> private Statement prepareStatement(StatementHandler handler, Log statementLog) throws SQLException &#123;</span><br><span class="line">    Statement stmt;</span><br><span class="line">    BoundSql boundSql = handler.getBoundSql();</span><br><span class="line">    String sql = boundSql.getSql();</span><br><span class="line">    if (hasStatementFor(sql)) &#123;</span><br><span class="line">      stmt = getStatement(sql);</span><br><span class="line">      applyTransactionTimeout(stmt);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      Connection connection = getConnection(statementLog);</span><br><span class="line">      stmt = handler.prepare(connection, transaction.getTimeout());</span><br><span class="line">      putStatement(sql, stmt);</span><br><span class="line">    &#125;</span><br><span class="line">    handler.parameterize(stmt);</span><br><span class="line">    return stmt;</span><br></pre></td></tr></table></figure>
+
+<p>注意: 因为ReuseExecutor 缓存了StatementHandler，所以doFlushStatements, 会关闭之前缓存的StatementHandler，然后返回一个空列表</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public List&lt;BatchResult&gt; doFlushStatements(boolean isRollback) throws SQLException &#123;</span><br><span class="line">  for (Statement stmt : statementMap.values()) &#123;</span><br><span class="line">    closeStatement(stmt);</span><br><span class="line">  &#125;</span><br><span class="line">  statementMap.clear();</span><br><span class="line">  return Collections.emptyList();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="BatchExecutor-1"><a href="#BatchExecutor-1" class="headerlink" title="BatchExecutor"></a>BatchExecutor</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br></pre></td><td class="code"><pre><span class="line">// 保存需要执行的statementList, 为之后批次执行做准备</span><br><span class="line"> private final List&lt;Statement&gt; statementList = new ArrayList&lt;Statement&gt;();</span><br><span class="line"> // 结果</span><br><span class="line">  private final List&lt;BatchResult&gt; batchResultList = new ArrayList&lt;BatchResult&gt;();</span><br><span class="line">  // 当前编译过的Sql</span><br><span class="line">  private String currentSql;</span><br><span class="line">  // 当前的statement</span><br><span class="line">  private MappedStatement currentStatement;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@Override</span><br><span class="line">  public int doUpdate(MappedStatement ms, Object parameterObject) throws SQLException &#123;</span><br><span class="line">    final Configuration configuration = ms.getConfiguration();</span><br><span class="line">    final StatementHandler handler = configuration.newStatementHandler(this, ms, parameterObject, RowBounds.DEFAULT, null, null);</span><br><span class="line">    final BoundSql boundSql = handler.getBoundSql();</span><br><span class="line">    final String sql = boundSql.getSql();</span><br><span class="line">    final Statement stmt;</span><br><span class="line">    // 如果当前SQL与之前SQL不一致，那么久需要重新编译SQL</span><br><span class="line">    if (sql.equals(currentSql) &amp;&amp; ms.equals(currentStatement)) &#123;</span><br><span class="line">      int last = statementList.size() - 1;</span><br><span class="line">      stmt = statementList.get(last);</span><br><span class="line">      applyTransactionTimeout(stmt);</span><br><span class="line">     handler.parameterize(stmt);//fix Issues 322</span><br><span class="line">      BatchResult batchResult = batchResultList.get(last);</span><br><span class="line">      batchResult.addParameterObject(parameterObject);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      Connection connection = getConnection(ms.getStatementLog());</span><br><span class="line">      stmt = handler.prepare(connection, transaction.getTimeout());</span><br><span class="line">      handler.parameterize(stmt);    //fix Issues 322</span><br><span class="line">      currentSql = sql;</span><br><span class="line">      currentStatement = ms;</span><br><span class="line">      // 增加进待执行list</span><br><span class="line">      statementList.add(stmt);</span><br><span class="line">      batchResultList.add(new BatchResult(ms, sql, parameterObject));</span><br><span class="line">    &#125;</span><br><span class="line">  	// 将sql添加进statement. 由statementhandler 内部执行.（jdbc.xxstatementHandler）</span><br><span class="line">    handler.batch(stmt);</span><br><span class="line">    return BATCH_UPDATE_RETURN_VALUE;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  // commit/rollback/close-》 都会调用doFlushSatements,然后会执行stmt.executeBatch()。</span><br><span class="line">  @Override</span><br><span class="line">  public List&lt;BatchResult&gt; doFlushStatements(boolean isRollback) throws SQLException &#123;</span><br><span class="line">    try &#123;</span><br><span class="line">      List&lt;BatchResult&gt; results = new ArrayList&lt;BatchResult&gt;();</span><br><span class="line">      if (isRollback) &#123;</span><br><span class="line">        return Collections.emptyList();</span><br><span class="line">      &#125;</span><br><span class="line">      // 多个桶，一次执行每个桶</span><br><span class="line">      for (int i = 0, n = statementList.size(); i &lt; n; i++) &#123;</span><br><span class="line">        Statement stmt = statementList.get(i);</span><br><span class="line">        applyTransactionTimeout(stmt);</span><br><span class="line">        BatchResult batchResult = batchResultList.get(i);</span><br><span class="line">        try &#123;</span><br><span class="line">        // 这里是会实际执行</span><br><span class="line">          batchResult.setUpdateCounts(stmt.executeBatch());</span><br><span class="line">          MappedStatement ms = batchResult.getMappedStatement();</span><br><span class="line">          List&lt;Object&gt; parameterObjects = batchResult.getParameterObjects();</span><br><span class="line">          // 主键</span><br><span class="line">          KeyGenerator keyGenerator = ms.getKeyGenerator();</span><br><span class="line">          if (Jdbc3KeyGenerator.class.equals(keyGenerator.getClass())) &#123;</span><br><span class="line">            Jdbc3KeyGenerator jdbc3KeyGenerator = (Jdbc3KeyGenerator) keyGenerator;</span><br><span class="line">            jdbc3KeyGenerator.processBatch(ms, stmt, parameterObjects);</span><br><span class="line">          &#125; else if (!NoKeyGenerator.class.equals(keyGenerator.getClass())) &#123; //issue #141</span><br><span class="line">            for (Object parameter : parameterObjects) &#123;</span><br><span class="line">              keyGenerator.processAfter(this, ms, stmt, parameter);</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">          // Close statement to close cursor #1109</span><br><span class="line">          closeStatement(stmt);</span><br><span class="line">        &#125; catch (BatchUpdateException e) &#123;</span><br><span class="line">          StringBuilder message = new StringBuilder();</span><br><span class="line">          message.append(batchResult.getMappedStatement().getId())</span><br><span class="line">              .append(&quot; (batch index #&quot;)</span><br><span class="line">              .append(i + 1)</span><br><span class="line">              .append(&quot;)&quot;)</span><br><span class="line">              .append(&quot; failed.&quot;);</span><br><span class="line">          if (i &gt; 0) &#123;</span><br><span class="line">            message.append(&quot; &quot;)</span><br><span class="line">                .append(i)</span><br><span class="line">                .append(&quot; prior sub executor(s) completed successfully, but will be rolled back.&quot;);</span><br><span class="line">          &#125;</span><br><span class="line">          throw new BatchExecutorException(message.toString(), e, results, batchResult);</span><br><span class="line">        &#125;</span><br><span class="line">        // 结果</span><br><span class="line">        results.add(batchResult);</span><br><span class="line">      &#125;</span><br><span class="line">      return results;</span><br><span class="line">    &#125; finally &#123;</span><br><span class="line">      for (Statement stmt : statementList) &#123;</span><br><span class="line">        closeStatement(stmt);</span><br><span class="line">      &#125;</span><br><span class="line">      // 初始化掉成员变量</span><br><span class="line">      currentSql = null;</span><br><span class="line">      statementList.clear();</span><br><span class="line">      batchResultList.clear();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>需要注意的是: 如果SQL是AABBAA-&gt;那么就会有三个statement.<br>调用时序图</p>
+<img src="/2020/08/03/Mybatis-2/image-20200803154241375.png">
+
+<h5 id="CachingExecutor"><a href="#CachingExecutor" class="headerlink" title="CachingExecutor"></a>CachingExecutor</h5><p>装饰模式，实际是使用的SimpleExecutor, ReusedExecutor, BatchExecutor 三种之一。</p>
+<h4 id="tips"><a href="#tips" class="headerlink" title="tips"></a>tips</h4><ul>
+<li>Executor什么时候生成 <ul>
+<li>在创建SqlSession的时候，随之生成。</li>
+</ul>
+</li>
+<li>Executor 默认方式是什么？ 可否指定<ul>
+<li>默认是SimpleExecutor</li>
+<li>可以指定，有下面两种方式<ul>
+<li>通过SqlSessionFactory.openSession() 传入ExecutorType</li>
+<li>通过xml <seetting name="defaultExecutorType" value="REUSE"> 来指定      </seetting></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="参考大佬"><a href="#参考大佬" class="headerlink" title="参考大佬"></a>参考大佬</h4><p><a href="https://my.oschina.net/zudajun/blog/667214" target="_blank" rel="noopener">Mybatis3.3.x技术内幕（四）：五鼠闹东京之执行器Executor设计原本 </a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/java/" rel="tag"># java</a>
+          
+            <a href="/tags/mysql/" rel="tag"># mysql</a>
+          
+            <a href="/tags/mybatis/" rel="tag"># mybatis</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/08/01/Mybatis-4/" rel="next" title="聊聊Mybatis[事务管理]">
+                <i class="fa fa-chevron-left"></i> 聊聊Mybatis[事务管理]
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/08/04/Mybatis-5/" rel="prev" title="聊聊Mybatis[StatementHandler核心原理]">
+                聊聊Mybatis[StatementHandler核心原理] <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">lasbun</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">85</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                    
+                      
+                    
+                    <span class="site-state-item-count">1</span>
+                    <span class="site-state-item-name">categories</span>
+                  
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">58</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#前述"><span class="nav-number">1.</span> <span class="nav-text">前述</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Executor接口"><span class="nav-number">2.</span> <span class="nav-text">Executor接口</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#类关系图"><span class="nav-number">2.1.</span> <span class="nav-text">类关系图</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#SimpleExecutor"><span class="nav-number">2.2.</span> <span class="nav-text">SimpleExecutor</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#CloseExecutor"><span class="nav-number">2.3.</span> <span class="nav-text">CloseExecutor</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ReuseExecutor"><span class="nav-number">2.4.</span> <span class="nav-text">ReuseExecutor</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#BatchExecutor"><span class="nav-number">2.5.</span> <span class="nav-text">BatchExecutor</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#CacheExecutor"><span class="nav-number">2.6.</span> <span class="nav-text">CacheExecutor</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#部分源码分析"><span class="nav-number">3.</span> <span class="nav-text">部分源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#BaseExecutor-抽象类"><span class="nav-number">3.1.</span> <span class="nav-text">BaseExecutor 抽象类</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#SimpleExecutor-1"><span class="nav-number">3.2.</span> <span class="nav-text">SimpleExecutor</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ReuseExecutor-1"><span class="nav-number">3.3.</span> <span class="nav-text">ReuseExecutor</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#BatchExecutor-1"><span class="nav-number">3.4.</span> <span class="nav-text">BatchExecutor</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#CachingExecutor"><span class="nav-number">3.5.</span> <span class="nav-text">CachingExecutor</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#tips"><span class="nav-number">4.</span> <span class="nav-text">tips</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考大佬"><span class="nav-number">5.</span> <span class="nav-text">参考大佬</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2023</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lasbun</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.2</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.2"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -361,17 +361,17 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[java 基础学习之JVM学习]]></title>
-    <url>%2F2019%2F12%2F14%2Fjava%2Fjava%E8%99%9A%E6%8B%9F%E6%9C%BA%2F</url>
-    <content type="text"><![CDATA[JVM学习 JVM学习 [参考]: https://blog.csdn.net/xiangzhihong8/article/details/80412795 “比较详细” [参考2]: https://blog.csdn.net/u011546655/article/details/52175550 概念 又称为JVM. 通过在实际的计算机上仿真模拟各种计算机功能的虚拟计算机。 主要由字节码指令集，寄存器，栈，垃圾回收堆和存储方法域构成。 java 程序 与操作系统之间的翻译官 Java 程序编译后 生成.class文件. JVM针对不同的都有不同的解释器，所以只要针对系统中有相关的jvm，那么对应的编译后的程序就可以运行起来. — 一份代码多次运行. JVM 生命周期 JVM 随Java程序开始而开始，结束而停止。一个Java程序会开启一个JVM进程，一台计算机上可以运行多个程序===&gt; 多个JVM进程 JVM将线程分为：守护线程和普通线程两种。 守护线程： JVM自己使用的线程，比如GC(垃圾回收) 普通线程一般是Java程序的线程，只要JVM有普通线程在执行，JVM就不会停止. JVM 内存模型 堆和方法区是所有线程共有的，虚拟机栈和本地方法栈和程序计数器都是线程私有的。 堆内存（线程共享） 分为年轻代和老年代. 还有一个永久代在1.8之前存在，1.8(含)之后永久代被移除。 堆内存是内存优化中的一个重要内容。 方法区（线程共享） 存储已经被虚拟机加载的类信息,常量，静态变量，即时编译(JIT)后的代码等数据。 因为线程共享，所以方法区的信息，必须要保证线程安全。如果有两个线程同时加载一个类，只能一次加载一个。 运行时，方法区内存可变更（扩展以及回收）。方法区里面的对象也可以被回收，但必须是该类没有任何引用的情况，才可以被回收。 程序计数器 职责: 字节码解释器依赖程序计数器来选取下一条要执行的指令。分支，循环，跳转，异常处理，线程恢复等基础功能都需要依赖这个计数器来完成。 JVM多线程依赖线程轮流切换并分配处理器执行时间的方式来实现的,为了每个线程切换后都能够找到正确的下一条指令，所以每个线程都有一个独立的程序计数器 Java虚拟机栈 即通常所说的堆栈里面的栈，用于Java方法运行时候的内存模型。 Java虚拟栈运行过程：每个方法执行的时候都会创建一个栈帧(stack Frame)用于存储变量表(强类型，所以内存大小不会更改),操作，动态链接，方法出口等信息。每个方法从调用到出栈 的过程，就对用栈帧在虚拟机中从入栈到出栈的过程。 本地方法栈 Native Method java调用非java代码的接口。(本质上还是) 主要用于存储本地方法的局部变量表，本地方法的操作数栈等信息，超过作用域时，被自动释放掉 主要用于JVM调用本地方法接口(Native)。 类加载过程 Load 一，通过类的全限定名(java.package.class) 获取定义好的二进制字节流(这个应该是编译好的.class文件) 二，将字节流代表的静态存储结构转化为方法区的运行时的数据结构 三，在Java堆生成一个代表该类的java.lang.class对象,作为对方法区中这些数据的访问入口 注意： Load阶段是获取类的二进制类字节流的最佳阶段，开发既可以使用System类加载器，又可以使用自己的类加载器 Link 将Java中的二进制代码合并到JVM运行状态之中的过程 一， 验证： 确保被加载类正确 文件格式验证 验证字节流中是否符合class文件的规范。例如是否以OxCAFEBABE开头，主次版本号是否在当前虚拟机的处理范围之内，常量池中常量是否有不被包含支持的类型 元数据验证：对字节码描述的信息进行语义分析。保证其描述的信息与Java语言规范符合. 字节码验证：通过数据流和控制流分析，确定程序语义是合法的，符合逻辑的。 符号引用验证:确保解析动作能正确执行。 注意：验证很重要，但不是必须，对程序运行期没影响。由-Xverifynone参数。 二，准备：为类的静态变量分配内存，并将其初始化为初始值 这个时候分配内存仅是类变量(static),不是实例变量，实例变量会再对象实例化随对象一块分配在Java堆中. 这里的初始值为数据类型的零值(0, 0L, false, null等) 三，解析： 将类中相关符号引用转换为直接引用 Initialize 为类的静态变量设置正确的初始值 class加载器 Bootstap classLoader 负责加载$JAVA_HOME中 jre/lib/rt.jar 里所有的class或Xbootclassoath选项指定的jar包。由C++实现，不是ClassLoader子类。 Extension ClassLoader 负责加载java平台中扩展功能的一些jar包，包括$JAVA_HOME中jre/lib/*.jar 或 -Djava.ext.dirs指定目录下的jar包。 App classLoader 负责加载classpath中指定的jar包及 Djava.class.path 所指定目录下的类和jar包 Customer classLoader 通过java.lang.ClassLoader的子类自定义加载class，属于应用程序根据自身需要自定义的ClassLoader，如tomcat、jboss都会根据j2ee规范自行实现ClassLoader。]]></content>
+    <title><![CDATA[java 基础学习之final finally finalize 区别]]></title>
+    <url>%2F2019%2F12%2F14%2Fjava%2Ffinal%20finally%20finalize%20%E5%8C%BA%E5%88%AB%2F</url>
+    <content type="text"><![CDATA[final finally finalize 区别 final finally finalize 区别 final (可以修饰 类 方法 变量) 修饰类 表示不允许继承 final类中所有的成员方法都会隐式的定义为final方法。 修饰方法 表示子类不能重写此方法 提高效率 锁定方法 修饰变量 final成员变量表示常量，只能被赋值一次，赋值后其值不再改变 finally(跟try…except连用) 不关有没有异常都会执行。 注意： 只有当执行的时候，并且没有发生 线程被kill,断电，退出虚拟机等情况(这些情况不会执行finally)，finally才会执行. 特殊 123456789101112131415161718private int testFinallyString(String str) &#123; try &#123; return str.charAt(0) - &apos;0&apos;; &#125; catch (NullPointerException e) &#123; return 1; &#125; catch (StringIndexOutOfBoundsException e) &#123; return 2; &#125; finally &#123; return 6; &#125;&#125;// 调用函数System.out.println(testFinallyString(null) + &quot; &quot; + testFinallyString(&quot;0&quot;) + &quot; &quot; + testFinallyString(&quot;&quot;));// 结果将会输出 6 6 6// 原因是因为 finally 特殊，会撤销之前的return. finalize(在java.lang.Object里定义的) 这个方法在gc启动，该对象被回收的时候被调用 跟析构函数不一样. 注意： 这个跟c++ 中的析构函数是不一样的。 c++ 调用delete 时候，对象就会被删除掉。 java 里面的调用gc，也不一定会及时删除。而是根据下一个删除动作才会删除]]></content>
       <tags>
         <tag>java</tag>
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[java 基础学习之final finally finalize 区别]]></title>
-    <url>%2F2019%2F12%2F14%2Fjava%2Ffinal%20finally%20finalize%20%E5%8C%BA%E5%88%AB%2F</url>
-    <content type="text"><![CDATA[final finally finalize 区别 final finally finalize 区别 final (可以修饰 类 方法 变量) 修饰类 表示不允许继承 final类中所有的成员方法都会隐式的定义为final方法。 修饰方法 表示子类不能重写此方法 提高效率 锁定方法 修饰变量 final成员变量表示常量，只能被赋值一次，赋值后其值不再改变 finally(跟try…except连用) 不关有没有异常都会执行。 注意： 只有当执行的时候，并且没有发生 线程被kill,断电，退出虚拟机等情况(这些情况不会执行finally)，finally才会执行. 特殊 123456789101112131415161718private int testFinallyString(String str) &#123; try &#123; return str.charAt(0) - &apos;0&apos;; &#125; catch (NullPointerException e) &#123; return 1; &#125; catch (StringIndexOutOfBoundsException e) &#123; return 2; &#125; finally &#123; return 6; &#125;&#125;// 调用函数System.out.println(testFinallyString(null) + &quot; &quot; + testFinallyString(&quot;0&quot;) + &quot; &quot; + testFinallyString(&quot;&quot;));// 结果将会输出 6 6 6// 原因是因为 finally 特殊，会撤销之前的return. finalize(在java.lang.Object里定义的) 这个方法在gc启动，该对象被回收的时候被调用 跟析构函数不一样. 注意： 这个跟c++ 中的析构函数是不一样的。 c++ 调用delete 时候，对象就会被删除掉。 java 里面的调用gc，也不一定会及时删除。而是根据下一个删除动作才会删除]]></content>
+    <title><![CDATA[java 基础学习之JVM学习]]></title>
+    <url>%2F2019%2F12%2F14%2Fjava%2Fjava%E8%99%9A%E6%8B%9F%E6%9C%BA%2F</url>
+    <content type="text"><![CDATA[JVM学习 JVM学习 [参考]: https://blog.csdn.net/xiangzhihong8/article/details/80412795 “比较详细” [参考2]: https://blog.csdn.net/u011546655/article/details/52175550 概念 又称为JVM. 通过在实际的计算机上仿真模拟各种计算机功能的虚拟计算机。 主要由字节码指令集，寄存器，栈，垃圾回收堆和存储方法域构成。 java 程序 与操作系统之间的翻译官 Java 程序编译后 生成.class文件. JVM针对不同的都有不同的解释器，所以只要针对系统中有相关的jvm，那么对应的编译后的程序就可以运行起来. — 一份代码多次运行. JVM 生命周期 JVM 随Java程序开始而开始，结束而停止。一个Java程序会开启一个JVM进程，一台计算机上可以运行多个程序===&gt; 多个JVM进程 JVM将线程分为：守护线程和普通线程两种。 守护线程： JVM自己使用的线程，比如GC(垃圾回收) 普通线程一般是Java程序的线程，只要JVM有普通线程在执行，JVM就不会停止. JVM 内存模型 堆和方法区是所有线程共有的，虚拟机栈和本地方法栈和程序计数器都是线程私有的。 堆内存（线程共享） 分为年轻代和老年代. 还有一个永久代在1.8之前存在，1.8(含)之后永久代被移除。 堆内存是内存优化中的一个重要内容。 方法区（线程共享） 存储已经被虚拟机加载的类信息,常量，静态变量，即时编译(JIT)后的代码等数据。 因为线程共享，所以方法区的信息，必须要保证线程安全。如果有两个线程同时加载一个类，只能一次加载一个。 运行时，方法区内存可变更（扩展以及回收）。方法区里面的对象也可以被回收，但必须是该类没有任何引用的情况，才可以被回收。 程序计数器 职责: 字节码解释器依赖程序计数器来选取下一条要执行的指令。分支，循环，跳转，异常处理，线程恢复等基础功能都需要依赖这个计数器来完成。 JVM多线程依赖线程轮流切换并分配处理器执行时间的方式来实现的,为了每个线程切换后都能够找到正确的下一条指令，所以每个线程都有一个独立的程序计数器 Java虚拟机栈 即通常所说的堆栈里面的栈，用于Java方法运行时候的内存模型。 Java虚拟栈运行过程：每个方法执行的时候都会创建一个栈帧(stack Frame)用于存储变量表(强类型，所以内存大小不会更改),操作，动态链接，方法出口等信息。每个方法从调用到出栈 的过程，就对用栈帧在虚拟机中从入栈到出栈的过程。 本地方法栈 Native Method java调用非java代码的接口。(本质上还是) 主要用于存储本地方法的局部变量表，本地方法的操作数栈等信息，超过作用域时，被自动释放掉 主要用于JVM调用本地方法接口(Native)。 类加载过程 Load 一，通过类的全限定名(java.package.class) 获取定义好的二进制字节流(这个应该是编译好的.class文件) 二，将字节流代表的静态存储结构转化为方法区的运行时的数据结构 三，在Java堆生成一个代表该类的java.lang.class对象,作为对方法区中这些数据的访问入口 注意： Load阶段是获取类的二进制类字节流的最佳阶段，开发既可以使用System类加载器，又可以使用自己的类加载器 Link 将Java中的二进制代码合并到JVM运行状态之中的过程 一， 验证： 确保被加载类正确 文件格式验证 验证字节流中是否符合class文件的规范。例如是否以OxCAFEBABE开头，主次版本号是否在当前虚拟机的处理范围之内，常量池中常量是否有不被包含支持的类型 元数据验证：对字节码描述的信息进行语义分析。保证其描述的信息与Java语言规范符合. 字节码验证：通过数据流和控制流分析，确定程序语义是合法的，符合逻辑的。 符号引用验证:确保解析动作能正确执行。 注意：验证很重要，但不是必须，对程序运行期没影响。由-Xverifynone参数。 二，准备：为类的静态变量分配内存，并将其初始化为初始值 这个时候分配内存仅是类变量(static),不是实例变量，实例变量会再对象实例化随对象一块分配在Java堆中. 这里的初始值为数据类型的零值(0, 0L, false, null等) 三，解析： 将类中相关符号引用转换为直接引用 Initialize 为类的静态变量设置正确的初始值 class加载器 Bootstap classLoader 负责加载$JAVA_HOME中 jre/lib/rt.jar 里所有的class或Xbootclassoath选项指定的jar包。由C++实现，不是ClassLoader子类。 Extension ClassLoader 负责加载java平台中扩展功能的一些jar包，包括$JAVA_HOME中jre/lib/*.jar 或 -Djava.ext.dirs指定目录下的jar包。 App classLoader 负责加载classpath中指定的jar包及 Djava.class.path 所指定目录下的类和jar包 Customer classLoader 通过java.lang.ClassLoader的子类自定义加载class，属于应用程序根据自身需要自定义的ClassLoader，如tomcat、jboss都会根据j2ee规范自行实现ClassLoader。]]></content>
       <tags>
         <tag>java</tag>
       </tags>
@@ -401,17 +401,17 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[面向对象的特征与特性]]></title>
-    <url>%2F2019%2F12%2F11%2Fjava%2F%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%9A%84%E7%89%B9%E5%BE%81%E4%B8%8E%E7%89%B9%E6%80%A7%2F</url>
-    <content type="text"><![CDATA[面向对象的特征与特性 面向对象的特征与特性 特征（一般是表面） 封装 抽象 继承 多态 特性（一般是本质） 封装 继承 多态]]></content>
+    <title><![CDATA[java 基础学习之抽象类与接口对比]]></title>
+    <url>%2F2019%2F12%2F11%2Fjava%2F%E6%8A%BD%E8%B1%A1%E7%B1%BB%E4%B8%8E%E6%8E%A5%E5%8F%A3%E5%AF%B9%E6%AF%94%2F</url>
+    <content type="text"><![CDATA[抽象类与接口对比 抽象类与接口对比 参数 抽象类 接口 默认的方法实现 可以有自己的 抽象函数，不存在实现 实现 extends implements 构造器 可以有 不能有 与正常java类 除了不可实例化，其他一样 完全不同 权限 private public protected 只能为public 多继承 子类一次只能继承一个抽象类 可以继承多个接口 速度 比接口快 接口要花时间找在类中实现的方法 添加新方法 不影响子类 子类必须要实现 如果是基本功能一直在改，直接用抽象类 如果是接口不变，或者多继承，使用抽象。]]></content>
       <tags>
         <tag>java</tag>
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[java 基础学习之抽象类与接口对比]]></title>
-    <url>%2F2019%2F12%2F11%2Fjava%2F%E6%8A%BD%E8%B1%A1%E7%B1%BB%E4%B8%8E%E6%8E%A5%E5%8F%A3%E5%AF%B9%E6%AF%94%2F</url>
-    <content type="text"><![CDATA[抽象类与接口对比 抽象类与接口对比 参数 抽象类 接口 默认的方法实现 可以有自己的 抽象函数，不存在实现 实现 extends implements 构造器 可以有 不能有 与正常java类 除了不可实例化，其他一样 完全不同 权限 private public protected 只能为public 多继承 子类一次只能继承一个抽象类 可以继承多个接口 速度 比接口快 接口要花时间找在类中实现的方法 添加新方法 不影响子类 子类必须要实现 如果是基本功能一直在改，直接用抽象类 如果是接口不变，或者多继承，使用抽象。]]></content>
+    <title><![CDATA[面向对象的特征与特性]]></title>
+    <url>%2F2019%2F12%2F11%2Fjava%2F%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%9A%84%E7%89%B9%E5%BE%81%E4%B8%8E%E7%89%B9%E6%80%A7%2F</url>
+    <content type="text"><![CDATA[面向对象的特征与特性 面向对象的特征与特性 特征（一般是表面） 封装 抽象 继承 多态 特性（一般是本质） 封装 继承 多态]]></content>
       <tags>
         <tag>java</tag>
       </tags>
@@ -505,9 +505,9 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[设计模式之工厂模式vs建造者模式]]></title>
-    <url>%2F2019%2F12%2F03%2F%E6%9E%B6%E6%9E%84%2F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%2F%E8%B0%81%E4%B8%8E%E4%BA%89%E9%94%8B%2F%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8Fvs%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F%2F</url>
-    <content type="text"><![CDATA[工厂模式vs建造者模式 工厂模式vs建造者模式举例： 人分为大人，小孩。大人可以抽烟喝酒，小孩子只会玩泥巴。 从角色上看 工厂模式 工厂 抽象产品类 具体产品类 建造者模式 指挥者 抽象builder 具体builder 产品 对外部来讲 使用工厂，外部需要知道有哪些产品 使用建造者，外部不知道有什么产品，也不知道是谁来建造，全部由指挥者来决定生产什么东西。 其他差异 关注的颗粒度不同 工厂模式关注的是产品的整体 建造者可以的话，更关注的是产品实现的步骤，顺序组合等 如何取舍 如果是关注产品的实现的步骤，顺序组合等，建议使用建造者模式。反之建议使用工厂模式。]]></content>
+    <title><![CDATA[设计模式之观察者模式]]></title>
+    <url>%2F2019%2F12%2F03%2F%E6%9E%B6%E6%9E%84%2F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%2F%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F%2F</url>
+    <content type="text"><![CDATA[观察者模式(observer。。 publish|subscribe) 从属模式，model-View等 观察者模式(observer。。 publish|subscribe) 从属模式，model-View等 场景 当一个对象状态改变之后，需要通知其他对象进行相应的动作 角色 抽象观察者 具体观察者 抽象观察目标 具体观察目标 优点 联动/广播通信/消息传递 符合开闭原则 缺点 观察者只知道目标变化，而不知道具体什么变化 观察者众多，会导致系统复杂]]></content>
       <tags>
         <tag>设计模式</tag>
         <tag>架构</tag>
@@ -523,9 +523,9 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[设计模式之观察者模式]]></title>
-    <url>%2F2019%2F12%2F03%2F%E6%9E%B6%E6%9E%84%2F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%2F%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F%2F</url>
-    <content type="text"><![CDATA[观察者模式(observer。。 publish|subscribe) 从属模式，model-View等 观察者模式(observer。。 publish|subscribe) 从属模式，model-View等 场景 当一个对象状态改变之后，需要通知其他对象进行相应的动作 角色 抽象观察者 具体观察者 抽象观察目标 具体观察目标 优点 联动/广播通信/消息传递 符合开闭原则 缺点 观察者只知道目标变化，而不知道具体什么变化 观察者众多，会导致系统复杂]]></content>
+    <title><![CDATA[设计模式之工厂模式vs建造者模式]]></title>
+    <url>%2F2019%2F12%2F03%2F%E6%9E%B6%E6%9E%84%2F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%2F%E8%B0%81%E4%B8%8E%E4%BA%89%E9%94%8B%2F%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8Fvs%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F%2F</url>
+    <content type="text"><![CDATA[工厂模式vs建造者模式 工厂模式vs建造者模式举例： 人分为大人，小孩。大人可以抽烟喝酒，小孩子只会玩泥巴。 从角色上看 工厂模式 工厂 抽象产品类 具体产品类 建造者模式 指挥者 抽象builder 具体builder 产品 对外部来讲 使用工厂，外部需要知道有哪些产品 使用建造者，外部不知道有什么产品，也不知道是谁来建造，全部由指挥者来决定生产什么东西。 其他差异 关注的颗粒度不同 工厂模式关注的是产品的整体 建造者可以的话，更关注的是产品实现的步骤，顺序组合等 如何取舍 如果是关注产品的实现的步骤，顺序组合等，建议使用建造者模式。反之建议使用工厂模式。]]></content>
       <tags>
         <tag>设计模式</tag>
         <tag>架构</tag>
@@ -568,18 +568,18 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[设计模式之命令模式(command)]]></title>
-    <url>%2F2019%2F11%2F30%2F%E6%9E%B6%E6%9E%84%2F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%2F%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F%2F</url>
-    <content type="text"><![CDATA[命令模式(command) 命令模式(command) 场景 解耦调用者与被调用者，使二者不直接交互（类似代理模式） 角色 调用者 命令接口(command) 具体命令(xxcommand) 被调用者(receiver) 客户端(这个其实有些时候可以跟调用者合并) 优点 解耦接口调用者与被调用者之间关系 缺点 命令太多，会导致系统复杂]]></content>
+    <title><![CDATA[设计模式之外观模式]]></title>
+    <url>%2F2019%2F11%2F30%2F%E6%9E%B6%E6%9E%84%2F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%2F%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F%2F</url>
+    <content type="text"><![CDATA[外观模式 外观模式 场景 内部接口众多，client需要手动调用每个接口 角色 外观角色 子系统角色 优点 对使用方简单化，减少client处理的对象数目，并对子系统使用更加容易 缺点 因外观类整合了子系统类，使用缺乏一定的灵活性.]]></content>
       <tags>
         <tag>设计模式</tag>
         <tag>架构</tag>
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[设计模式之外观模式]]></title>
-    <url>%2F2019%2F11%2F30%2F%E6%9E%B6%E6%9E%84%2F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%2F%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F%2F</url>
-    <content type="text"><![CDATA[外观模式 外观模式 场景 内部接口众多，client需要手动调用每个接口 角色 外观角色 子系统角色 优点 对使用方简单化，减少client处理的对象数目，并对子系统使用更加容易 缺点 因外观类整合了子系统类，使用缺乏一定的灵活性.]]></content>
+    <title><![CDATA[设计模式之命令模式(command)]]></title>
+    <url>%2F2019%2F11%2F30%2F%E6%9E%B6%E6%9E%84%2F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%2F%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F%2F</url>
+    <content type="text"><![CDATA[命令模式(command) 命令模式(command) 场景 解耦调用者与被调用者，使二者不直接交互（类似代理模式） 角色 调用者 命令接口(command) 具体命令(xxcommand) 被调用者(receiver) 客户端(这个其实有些时候可以跟调用者合并) 优点 解耦接口调用者与被调用者之间关系 缺点 命令太多，会导致系统复杂]]></content>
       <tags>
         <tag>设计模式</tag>
         <tag>架构</tag>
